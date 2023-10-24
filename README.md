@@ -1,2 +1,2 @@
 # sc-analysis-nf
-pipeline to 
+Pipeline to preprocess raw data from iRODS.
