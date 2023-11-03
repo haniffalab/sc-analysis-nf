@@ -26,7 +26,7 @@ process READ {
 
     conda 'scanpy_38'
 
-    publishDir "results", mode: "copy"
+    publishDir "output", mode: "copy"
 
     input: path(read_in)
 
@@ -42,7 +42,7 @@ process PREPRO {
 
     conda 'scanpy_38'
 
-    publishDir "results", mode: "copy"
+    publishDir "output", mode: "copy"
 
     input: path(read_out)
 
@@ -65,7 +65,7 @@ process PCA {
 
     conda 'scanpy_38'
 
-    publishDir "results", mode: "copy"
+    publishDir "output", mode: "copy"
 
     input: path(pre_adata_out)
 
