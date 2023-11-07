@@ -2,6 +2,7 @@
 
 #This includes PCA, "Computing the neighborhood graph", "Embedding the neighborhood graph" and 
 #"Clustering the neighborhood graph" sections of the Scanpy PBMC3 tutorial 
+results_file = 'pbmc3k.h5ad'  # the file that will store the analysis result
 
 import scanpy as sc
 import pandas as pd
@@ -59,12 +60,7 @@ sc.tl.leiden(adata)
 sc.pl.umap(adata, color=['leiden', 'CST3', 'NKG7'], save="_leiden_graph_clustering.png", show=False)
 
 #Save the result.
-#adata.write(results_file)
+adata.write(results_file)
 ## make this adata file into output:
 # To allow for input of the processed adata object to be utilised into further scripts.
 #adata.write_h5ad("adata_2pp_out.h5ad") 
-
-###################################################################################################################
-# come back to this!! I need to save it to the write folder really but I haven't actually made that yet..         #
-###################################################################################################################
-

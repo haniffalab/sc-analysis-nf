@@ -8,7 +8,7 @@ sc.settings.verbosity = 3             # verbosity: errors (0), warnings (1), inf
 sc.logging.print_header()
 sc.settings.set_figure_params(dpi=80, facecolor='white')
 
-results_file = 'write/pbmc3k.h5ad'  # the file that will store the analysis result
+#results_file = 'pbmc3k.h5ad'  # the file that will store the analysis result
 
 #Read in the count matrix into an AnnData object, which holds many slots for annotations and different representations of the data.
 #It also comes with its own HDF5-based file format: .h5ad.
