@@ -6,7 +6,6 @@ input_exp = file(params.input)
 output_exp = params.output
 read_in = file(params.read_in)
 read_out = params.read_out
-read_out2 = params.read_out2
 pre_in = file(params.pre_in)
 pre_out = params.pre_out
 pre_vio_1 = params.vio1
@@ -22,6 +21,7 @@ pca_plot2 = params.pca_plot2
 pca_plot3 = params.pca_plot3
 pca_plot4 = params.pca_plot4
 pca_plot5 = params.pca_plot5
+pca_out = params.pca_out
 mgenes_in = params.mgenes_in
 mgenes_plot1 = params.mgenes_plot1
 mgenes_plot2 = params.mgenes_plot2
@@ -43,7 +43,7 @@ process READ {
     conda 'scanpy_38'
 
     publishDir "output", mode: "copy"
-    publishDir "write", pattern: "pbmc3k.h5ad"
+    publishDir "output", pattern: "pbmc3k.h5ad"
 
     input: path(read_in)
 
@@ -74,7 +74,7 @@ process PREPRO {
     
     script:
     """
-    2_preprocess.py --input ${read_out} --output ${pre_out}
+    2_preprocess.py --input ${read_out} --output ${pre_adata_out}
     """
 }
 
@@ -83,7 +83,7 @@ process PCA {
     conda 'scanpy_38'
 
     publishDir "output", mode: "copy"
-    publishDir "write", pattern: "pbmc3k.h5ad"
+    publishDir "output", pattern: ".h5ad"
 
     input: path(pca_in)
 
@@ -92,12 +92,12 @@ process PCA {
             path("${pca_plot3}")
             path("${pca_plot4}")
             path("${pca_plot5}")
-            path("${read_out2}")
+            path("${pca_out}")
 
     
     script:
     """
-    3_PCA.py --input ${pca_in} --output ${pca_plot1}
+    3_PCA.py --input ${pca_in} --output ${pca_out}
     """
 }
 
@@ -106,9 +106,9 @@ process M_GENES {
     conda 'scanpy_38'
 
     publishDir "output", mode: "copy"
-    publishDir "write", pattern: ".h5ad"
+    publishDir "output", pattern: ".h5ad"
 
-    input: path(mgenes_in)
+    input: path(pca_out)
 
     output: path("${mgenes_plot1}")
             path("${mgenes_plot2}")
@@ -127,7 +127,7 @@ process M_GENES {
             
     script:
     """
-    4_marker_genes.py --input ${mgenes_in} --output ${mgenes_out}
+    4_marker_genes.py --input ${pca_out} --output ${mgenes_out}
     """
 }
 
@@ -135,6 +135,5 @@ workflow {
     READ(read_in)
     PREPRO(READ.out[0])
     PCA(pca_in)
-    M_GENES(mgenes_in)
+    M_GENES(PCA.out[5])
 }
-

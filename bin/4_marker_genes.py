@@ -99,7 +99,7 @@ sc.pl.dotplot(adata, marker_genes, groupby='leiden', save='.png', show=False);
 #########################################################################################################
 #           getting errors when making this plot!!! asked Jake already                                  #
 #########################################################################################################
-#sc.pl.stacked_violin(adata, marker_genes, groupby='leiden', rotation=90, save='.png', show=False);
+#sc.pl.stacked_violin(adata, marker_genes, groupby='leiden', save='.png', show=False);
 
 #During the course of this analysis, the AnnData accumlated the following annotations.
 results_file_4 = "pbmc3k_4_end.h5ad"

@@ -3,7 +3,7 @@
 import scanpy as sc
 import pandas as pd
 import numpy as np
-results_file = 'write/pbmc3k.h5ad'  # the file that will store the analysis result
+results_file = 'pbmc3k.h5ad'  # the file that will store the analysis result
 
 
 adata = sc.read_h5ad("adata.h5ad")
