@@ -1,4 +1,4 @@
-#!/Users/nlg143/anaconda3/envs/scanpy_38/bin/python
+#!/usr/bin/env python3
 
 
 import scanpy as sc

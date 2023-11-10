@@ -1,4 +1,4 @@
-#!/Users/nlg143/anaconda3/envs/scanpy_38/bin/python
+#!/usr/bin/env python3
 
 #This includes PCA, "Computing the neighborhood graph", "Embedding the neighborhood graph" and 
 #"Clustering the neighborhood graph" sections of the Scanpy PBMC3 tutorial 

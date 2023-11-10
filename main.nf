@@ -40,7 +40,6 @@ mgenes_out3 = params.mgenes_out3
 
 process READ {
 
-    conda 'scanpy_38'
 
     publishDir "output", mode: "copy"
     publishDir "output", pattern: "pbmc3k.h5ad"
@@ -133,7 +132,7 @@ process M_GENES {
 
 workflow { 
     READ(read_in)
-    //PREPRO(READ.out[0])
-    //PCA(PREPRO.out[7])
-    //M_GENES(PCA.out[5])
+    PREPRO(READ.out[0])
+    PCA(PREPRO.out[7])
+    M_GENES(PCA.out[5])
 }
