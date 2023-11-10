@@ -40,7 +40,6 @@ mgenes_out3 = params.mgenes_out3
 
 process READ {
 
-
     publishDir "output", mode: "copy"
     publishDir "output", pattern: "pbmc3k.h5ad"
 
@@ -50,30 +49,22 @@ process READ {
     
     script:
     """
-    1_read.py --input ${read_in} --output ${read_out}
+    1_read.py --path ${read_in} --outfile ${read_out}
     """
 }
 
 process PREPRO {
 
-    conda 'scanpy_38'
-
     publishDir "output", mode: "copy"
 
     input: path(read_out)
 
-    output: path("${pre_out}")
-            path("${pre_vio_1}")
-            path("${pre_vio_2}")
-            path("${pre_vio_3}")
-            path("${pre_scat1}")
-            path("${pre_scat2}")
-            path("${pre_dispersion}")
-            path("${pre_adata_out}")
+    output: path("figures/*")
+            path("${pre_adata_out}"), emit: pre_adata_out
     
     script:
     """
-    2_preprocess.py --input ${read_out} --output ${pre_adata_out}
+    2_preprocess.py --anndata_path ${read_out} --results_file ${pre_adata_out}
     """
 }
 
@@ -133,6 +124,6 @@ process M_GENES {
 workflow { 
     READ(read_in)
     PREPRO(READ.out[0])
-    PCA(PREPRO.out[7])
+    PCA(PREPRO.out.pre_adata_out)
     M_GENES(PCA.out[5])
 }
