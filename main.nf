@@ -85,7 +85,7 @@ process PCA {
     publishDir "output", mode: "copy"
     publishDir "output", pattern: ".h5ad"
 
-    input: path(pca_in)
+    input: path(pre_adata_out)
 
     output: path("${pca_plot1}")
             path("${pca_plot2}")
@@ -97,7 +97,7 @@ process PCA {
     
     script:
     """
-    3_PCA.py --input ${pca_in} --output ${pca_out}
+    3_PCA.py --input ${pre_adata_out} --output ${pca_out}
     """
 }
 
@@ -133,7 +133,7 @@ process M_GENES {
 
 workflow { 
     READ(read_in)
-    PREPRO(READ.out[0])
-    PCA(pca_in)
-    M_GENES(PCA.out[5])
+    //PREPRO(READ.out[0])
+    //PCA(PREPRO.out[7])
+    //M_GENES(PCA.out[5])
 }

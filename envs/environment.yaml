@@ -1,0 +1,10 @@
+name: scanpy_38
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - leidenalg=0.10.1
+  - python=3.8.18
+  - scanpy=1.9.5
+  
+
