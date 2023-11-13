@@ -87,7 +87,7 @@ process PCA {
     
     script:
     """
-    3_PCA.py --input ${pre_adata_out} --output ${pca_out}
+    3_PCA.py --pca_adata_input ${pre_adata_out} --pca_outfile ${pca_out}
     """
 }
 
@@ -117,7 +117,8 @@ process M_GENES {
             
     script:
     """
-    4_marker_genes.py --input ${pca_out} --output ${mgenes_out}
+    4_marker_genes.py --mg_adata_input ${pca_out} --mg_outfile_mid ${mgenes_out} --mg_outfile_end ${mgenes_out2} 
+    --mg_outfile_withoutx ${mgenes_out3}
     """
 }
 
