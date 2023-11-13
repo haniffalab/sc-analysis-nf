@@ -51,7 +51,7 @@ def marker_genes(mg_adata_input:str, mg_outfile_mid:str, mg_outfile_end:str, mg_
     marker_genes = ['IL7R', 'CD79A', 'MS4A1', 'CD8A', 'CD8B', 'LYZ', 'CD14','LGALS3', 'S100A8', 'GNLY', 'NKG7', 'KLRB1','FCGR3A', 'MS4A7', 'FCER1A', 'CST3', 'PPBP']
 
     #Reload the object that has been save with the Wilcoxon Rank-Sum test result.
-    adata = sc.read(results_file_4)
+    adata = sc.read(mg_outfile_mid)
     #Show the 10 top ranked genes per cluster 0, 1, …, 7 in a dataframe.
     pd.DataFrame(adata.uns['rank_genes_groups']['names']).head(5)
 

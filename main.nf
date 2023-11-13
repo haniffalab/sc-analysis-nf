@@ -117,7 +117,7 @@ process M_GENES {
             
     script:
     """
-    4_marker_genes.py --mg_adata_input ${pca_out} --mg_outfile_mid ${mgenes_out} --mg_outfile_end ${mgenes_out2} 
+    4_marker_genes.py --mg_adata_input ${pca_out} --mg_outfile_mid ${mgenes_out} --mg_outfile_end ${mgenes_out2} \
     --mg_outfile_withoutx ${mgenes_out3}
     """
 }
