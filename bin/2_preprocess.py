@@ -11,7 +11,7 @@ def preprocess(anndata_path: str, results_file: str):
     print(adata)
     # Show those genes that yield the highest fraction of counts in each single cell, across all cells.
     ####### eventually want to add wildcard of JOBID or something like that #######
-    sc.pl.highest_expr_genes(adata, n_top=20, save="_.png", show=False)
+    sc.pl.highest_expr_genes(adata, n_top=20, save="_2.png", show=False)
 
     # Basic filtering:
     sc.pp.filter_cells(adata, min_genes=200)
@@ -33,16 +33,16 @@ def preprocess(anndata_path: str, results_file: str):
         adata,
         "n_genes_by_counts",
         jitter=0.4,
-        save="_n_genes_by_counts.png",
+        save="_n_genes_by_counts_2.png",
         show=False,
     )
     # second violin plot
     sc.pl.violin(
-        adata, "total_counts", jitter=0.4, save="_total_counts.png", show=False
+        adata, "total_counts", jitter=0.4, save="_total_counts_2.png", show=False
     )
     # third violin plot
     sc.pl.violin(
-        adata, "pct_counts_mt", jitter=0.4, save="_pct_counts_mt.png", show=False
+        adata, "pct_counts_mt", jitter=0.4, save="_pct_counts_mt_2.png", show=False
     )
 
     # Remove cells that have too many mitochondrial genes expressed or too many total counts:
@@ -50,14 +50,14 @@ def preprocess(anndata_path: str, results_file: str):
         adata,
         x="total_counts",
         y="pct_counts_mt",
-        save="_pct_counts_mt.png",
+        save="_pct_counts_mt_2.png",
         show=False,
     )
     sc.pl.scatter(
         adata,
         x="total_counts",
         y="n_genes_by_counts",
-        save="_n_genes_by_count.png",
+        save="_n_genes_by_counts_2.png",
         show=False,
     )
 
@@ -74,7 +74,7 @@ def preprocess(anndata_path: str, results_file: str):
     # Identify highly-variable genes.
     sc.pp.highly_variable_genes(adata, min_mean=0.0125, max_mean=3, min_disp=0.5)
 
-    sc.pl.highly_variable_genes(adata, save="_1.png", show=False)
+    sc.pl.highly_variable_genes(adata, save="scatter_2.png", show=False)
 
     # Set the '.raw' attribute of the AnnData object to the normalized and logarithmized raw gene expression for later use in differential testing and visualizations of gene expression.
     # This simply freezes the state of the AnnData object.

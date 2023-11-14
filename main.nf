@@ -23,6 +23,7 @@ pca_plot4 = params.pca_plot4
 pca_plot5 = params.pca_plot5
 pca_out = params.pca_out
 mgenes_in = params.mgenes_in
+text_in = file(params.text_in)
 mgenes_plot1 = params.mgenes_plot1
 mgenes_plot2 = params.mgenes_plot2
 mgenes_out = params.mgenes_out
@@ -33,7 +34,7 @@ mgenes_plot6 = params.mgenes_plot6
 mgenes_plot7 = params.mgenes_plot7
 mgenes_plot8 = params.mgenes_plot8
 mgenes_plot9 = params.mgenes_plot9
-// mgenes_plot10 = params.mgenes_plot10
+mgenes_plot10 = params.mgenes_plot10
 mgenes_out2 = params.mgenes_out2
 mgenes_out3 = params.mgenes_out3
 
@@ -99,6 +100,7 @@ process M_GENES {
     publishDir "output", pattern: ".h5ad"
 
     input: path(pca_out)
+           path(text_in)
 
     output: path("${mgenes_plot1}")
             path("${mgenes_plot2}")
@@ -110,7 +112,7 @@ process M_GENES {
             path("${mgenes_plot7}")
             path("${mgenes_plot8}")
             path("${mgenes_plot9}")
-           // path("${mgenes_plot10}")
+            path("${mgenes_plot10}")
             path("${mgenes_out2}")
             path("${mgenes_out3}")
             
@@ -118,7 +120,7 @@ process M_GENES {
     script:
     """
     4_marker_genes.py --mg_adata_input ${pca_out} --mg_outfile_mid ${mgenes_out} --mg_outfile_end ${mgenes_out2} \
-    --mg_outfile_withoutx ${mgenes_out3}
+    --mg_outfile_withoutx ${mgenes_out3} --text_in ${text_in}
     """
 }
 
@@ -126,5 +128,5 @@ workflow {
     READ(read_in)
     PREPRO(READ.out[0])
     PCA(PREPRO.out.pre_adata_out)
-    M_GENES(PCA.out[5])
+    M_GENES(PCA.out[5], text_in)
 }
