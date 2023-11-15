@@ -34,6 +34,7 @@ All set-up required to utilise the pipeline.
         ## can also use VSCode or other TextEditor to edit file.
 
 2. Execute the pipeline.
+
         nextflow run main.nf -c nextflow.config 
         ## View log of pipeline 
         nextflow log modest_mcclintock -t template.html > provenance.html
