@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 
 
-def marker_genes(mg_adata_input:str, text_in:str, mg_outfile_mid:str, mg_outfile_end:str, mg_outfile_withoutx:str ):
+def marker_genes(mg_adata_input:str, text_in:str, mg_outfile_end:str, mg_outfile_withoutx:str ):
     #read in output file from third script 
     adata = sc.read_h5ad(mg_adata_input)
     results_file = 'pbmc3k.h5ad'  # the file that will store the analysis result
@@ -29,9 +29,10 @@ def marker_genes(mg_adata_input:str, text_in:str, mg_outfile_mid:str, mg_outfile
 
 
     ##save the result 
-    mg_outfile_mid = "pbmc3k_4.h5ad"
-    adata.write(mg_outfile_mid)
-
+    #mg_outfile_mid = "pbmc3k_4.h5ad"
+    #adata.write(mg_outfile_mid)
+    results_file = adata.copy()
+    results_file2 = adata.copy()  
 
     ##############################################################################################
     #       NOT ENTIRELY SURE OF WHAT THE ADATA OBJECT IS DOING? WHY ARE WE SAVING IT?
@@ -54,33 +55,38 @@ def marker_genes(mg_adata_input:str, text_in:str, mg_outfile_mid:str, mg_outfile
 
 
     #Reload the object that has been save with the Wilcoxon Rank-Sum test result.
-    adata = sc.read(mg_outfile_mid)
-    #Show the 10 top ranked genes per cluster 0, 1, …, 7 in a dataframe.
-    pd.DataFrame(adata.uns['rank_genes_groups']['names']).head(5)
+    #adata = sc.read(mg_outfile_mid)
+    ### instead of read in a saved file just use the object with wilcoxon results in 
+    results_file
 
-    # Get a table with scroes and groups 
-    result = adata.uns['rank_genes_groups']
+    #Show the 10 top ranked genes per cluster 0, 1, …, 7 in a dataframe.
+    pd.DataFrame(results_file.uns['rank_genes_groups']['names']).head(5)
+
+    # Get a table with scores and groups 
+    result = results_file.uns['rank_genes_groups']
     groups = result['names'].dtype.names
     pd.DataFrame(
         {group + '_' + key[:1]: result[key][group]
         for group in groups for key in ['names', 'pvals']}).head(5)
 
     #Compare to a single cluster:
-    sc.tl.rank_genes_groups(adata, 'leiden', groups=['0'], reference='1', method='wilcoxon')
-    sc.pl.rank_genes_groups(adata, groups=['0'], n_genes=20, save="_single_cluster_4.png", show=False)
+    sc.tl.rank_genes_groups(results_file, 'leiden', groups=['0'], reference='1', method='wilcoxon')
+    sc.pl.rank_genes_groups(results_file, groups=['0'], n_genes=20, save="_single_cluster_4.png", show=False)
 
     ## If we want a more detailed view for a certain group, use sc.pl.rank_genes_groups_violin.
-    sc.pl.rank_genes_groups_violin(adata, groups='0', n_genes=8, save="_violin_4.png", show=False)
+    sc.pl.rank_genes_groups_violin(results_file, groups='0', n_genes=8, save="_violin_4.png", show=False)
 
 
     #Reload the object with the computed differential expression (i.e. DE via a comparison with the rest of the groups):
-    adata = sc.read(mg_outfile_mid)
+    #adata = sc.read(mg_outfile_mid)
+    ### instead reload object adata_wilcoxon and reassign back to adata 
+    #results_file2
 
-    sc.pl.rank_genes_groups_violin(adata, groups='0', n_genes=8, save="_violin_differential_expression_4.png", show=False)
+    sc.pl.rank_genes_groups_violin(results_file2, groups='0', n_genes=8, save="_violin_differential_expression_4.png", show=False)
 
     #If you want to compare a certain gene across groups, use the following.
 
-    sc.pl.violin(adata, ['CST3', 'NKG7', 'PPBP'], groupby='leiden', save="_compare_across_groups_4.png", show=False)
+    sc.pl.violin(results_file2, ['CST3', 'NKG7', 'PPBP'], groupby='leiden', save="_compare_across_groups_4.png", show=False)
     #########################################################################################################
     #             will need to make it so these genes are not hard coded...                                 #
     #########################################################################################################
@@ -91,28 +97,28 @@ def marker_genes(mg_adata_input:str, text_in:str, mg_outfile_mid:str, mg_outfile
         'B', 'CD8 T',
         'NK', 'FCGR3A Monocytes',
         'Dendritic', 'Megakaryocytes']
-    adata.rename_categories('leiden', new_cluster_names)
+    results_file2.rename_categories('leiden', new_cluster_names)
 
     ####################    REASON FOR PDF RATHER THAN PNG/JPEG???    ######################
-    sc.pl.umap(adata, color='leiden', legend_loc='on data', title='', frameon=False, save='_leiden_cell_types_4.pdf',show=False)
+    sc.pl.umap(results_file2, color='leiden', legend_loc='on data', title='', frameon=False, save='_leiden_cell_types_4.pdf',show=False)
 
     ##Now that we annotated the cell types, let us visualize the marker genes.
-    sc.pl.dotplot(adata, marker_genes, groupby='leiden', save='leiden_marker_genes_4.png', show=False);
+    sc.pl.dotplot(results_file2, marker_genes, groupby='leiden', save='leiden_marker_genes_4.png', show=False);
 
     ##There is also a very compact violin plot.
     #########################################################################################################
     #           getting errors when making this plot!!! asked Jake already                                  #
     #########################################################################################################
-    sc.pl.stacked_violin(adata, marker_genes, groupby='leiden', save='leiden_marker_genes_4.png', show=False);
+    sc.pl.stacked_violin(results_file2, marker_genes, groupby='leiden', save='leiden_marker_genes_4.png', show=False);
 
     #During the course of this analysis, the AnnData accumlated the following annotations.
     mg_outfile_end = "pbmc3k_4_end.h5ad"
-    adata.write(mg_outfile_end, compression='gzip')  # `compression='gzip'` saves disk space, but slows down writing and subsequent reading
+    results_file2.write(mg_outfile_end, compression='gzip')  # `compression='gzip'` saves disk space, but slows down writing and subsequent reading
 
     #If you want to share this file with people who merely want to use it for visualization, 
     # a simple way to reduce the file size is by removing the dense scaled and corrected data matrix.
     # The file still contains the raw data used in the visualizations in adata.raw.
-    adata.raw.to_adata().write(mg_outfile_withoutx)
+    results_file2.raw.to_adata().write(mg_outfile_withoutx)
 
 if __name__ == "__main__":
     fire.Fire(marker_genes)

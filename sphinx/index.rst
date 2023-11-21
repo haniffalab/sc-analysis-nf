@@ -12,12 +12,11 @@
 sc-analysis-nf
 =================
 
-This Nextflow pipeline processes spatial and single-cell experiment data for visualisation in `WebAtlas App`_. 
-The pipeline generates data files for `supported data types`_, and builds a `view config`_.
+This Nextflow pipeline processes single-cell data and carries out a QC process following the `PBMC3K`_ Scanpy tutorial. 
+The pipeline also generates a series of plots uncovering the results of the QC process.
 
-.. _WebAtlas App: https://github.com/haniffalab/webatlas-app
-.. _supported data types: https://vitessce.io/docs/data-types-file-types/
-.. _view config: https://vitessce.io/docs/view-config-json/
+
+.. _PBMC3K: https://scanpy-tutorials.readthedocs.io/en/latest/pbmc3k.html
 
 .. toctree::
    :maxdepth: 1
@@ -27,9 +26,7 @@ The pipeline generates data files for `supported data types`_, and builds a `vie
    installation
    configuration
    run
-   visualise
    testing
-   modules
 
 Indices and tables
 ==================

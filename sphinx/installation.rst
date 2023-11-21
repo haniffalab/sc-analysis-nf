@@ -1,6 +1,6 @@
 .. _official nextflow documentation: https://www.nextflow.io/index.html#GetStarted
 .. _official Docker Install guide: https://docs.docker.com/engine/install/
-.. _releases on GitHub: https://github.com/haniffalab/webatlas-pipeline/releases
+.. _releases on GitHub: https://github.com/haniffalab/sc-analysis-nf
 .. _conda: https://docs.conda.io/projects/miniconda/en/latest/
 .. _mamba: https://mamba.readthedocs.io/en/latest/mamba-installation.html
 
@@ -9,48 +9,36 @@
 Installation
 ============
 
-Download the WebAtlas Pipeline release. You can look for previous `releases on GitHub`_.
+Download the sc-analysis-nf Pipeline release. You can look for previous `releases on GitHub`_.
 
 .. code-block:: shell
    :caption: Input
 
-   wget https://github.com/haniffalab/webatlas-pipeline/archive/refs/tags/v0.4.1.tar.gz
+   git clone git@github.com:haniffalab/sc-analysis-nf.git 
 
 .. code-block:: shell
    :caption: Expected Output
 
    Resolving github.com (github.com)... 140.82.121.3
    Connecting to github.com (github.com)|140.82.121.3|:443... connected.
-   HTTP request sent, awaiting response... 302 Found
-   Location: https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.4.1 [following]
-   --2023-05-18 09:30:15--  https://codeload.github.com/haniffalab/webatlas-pipeline/tar.gz/refs/tags/v0.4.1
-   Resolving codeload.github.com (codeload.github.com)... 140.82.121.9
-   Connecting to codeload.github.com (codeload.github.com)|140.82.121.9|:443... connected.
-   HTTP request sent, awaiting response... 200 OK
-   Length: unspecified [application/x-gzip]
-   Saving to: ‘v0.4.1.tar.gz’
+            ... THIS WILL NEED TO BE CHANGED
 
-   v0.4.1.tar.gz [ <=>                                           ]   2.70M  9.12MB/s    in 0.3s    
-
-   2023-05-18 09:30:16 (9.12 MB/s) - ‘v0.4.1.tar.gz’ saved [2835534]
-
-Extract the WebAtlas compressed tag and change directory into the new repo.
+Change directory into the new repo.
 
 .. code-block:: shell
    :caption: Input
 
-   tar -xzvf ./v0.4.1.tar.gz
-   cd webatlas-pipeline-0.4.1
+   cd sc-analysis-nf
 
 .. code-block:: shell
    :caption: Expected Output
     
-   webatlas-pipeline-0.4.1/
-   webatlas-pipeline-0.4.1/.github/
+   sc-analysis-nf/
+   sc-analysis-nf/README.md/
    ...
    ...
-   webatlas-pipeline-0.4.1/tests/input/simple_config.json
-   webatlas-pipeline-0.4.1/tests/test_class.py
+   sc-analysis-nf/envs/environment.yaml
+   sc-analysis-nf/input/filtered_gene_bc_matrices/barcodes.tsv
 
 .. _environment:
 
@@ -59,24 +47,24 @@ Environment setup
 
 .. _environment_conda:
 
-Follow these Environment Setup instructions using conda or manually installing the required components to run WebAtlas.
+Follow these Environment Setup instructions using conda or manually installing the required components to run sc-analysis-nf.
 
 Using conda
 -----------
 
-If you have `conda`_ or `mamba`_ already installed then you can use the ``environment.yaml`` file included in the WebAtlas release to create the environment.
+If you have `conda`_ or `mamba`_ already installed then you can use the ``environment.yaml`` file included in the sc-analysis-nf release to create the environment.
 
 .. code-block:: shell
    :caption: Input
 
-   conda env create -f environment.yaml
+   conda create -n nextflow_env -f environment.yml
 
-Then make sure you activate the ``webatlas`` environment beforer you use the pipeline.
+Then make sure you activate the ``nextflow_env`` environment beforer you use the pipeline.
 
 .. code-block:: shell
    :caption: Input
 
-   conda activate webatlas
+   conda acitvate nextlfow_env 
 
 
 .. _environment_manual:
@@ -126,6 +114,10 @@ Enter the following command in your terminal to install nextflow in the current 
    :caption: Input
 
    curl -s https://get.nextflow.io | bash
+   # Add Nextflow binary to your user's PATH:
+   mv nextflow ~/bin/
+   # OR system-wide installation:
+   # sudo mv nextflow /usr/local/bin
 
 .. code-block:: shell
    :caption: Output
@@ -142,40 +134,7 @@ Enter the following command in your terminal to install nextflow in the current 
 
 
    Nextflow installation completed. Please note:
-   - the executable file `nextflow` has been created in the folder: ./webatlas-pipeline
+   - the executable file `nextflow` has been created in the folder: ./sc-analysis-nf
    - you may complete the installation by moving it to a directory in your $PATH
 
 You can read more about how to install nextflow in the `official nextflow documentation`_.
-
-**#4. Check Docker is installed**
-
-Make sure Docker Engine 20.10 or later is installed on your computer by using the command:
-
-.. code-block:: shell
-   :caption: Input
-
-   docker version
-
-.. code-block:: shell
-   :caption: Output
-
-   Client: Docker Engine - Community
-   Version:           23.0.4
-   API version:       1.42
-   Go version:        go1.19.8
-   Git commit:        f480fb1
-   Built:             Fri Apr 14 10:32:23 2023
-   OS/Arch:           linux/amd64
-   Context:           default
-
-Follow the `official Docker Install guide`_ if it is not installed already.
-
-**#5. Build local docker images (optional)**
-
-When using docker the pipleine can use local images or pull them from DockerHub. If you want to build the images yourself you can do it like this:
-
-:: 
-
-    cd docker
-    ./build-docker-imgs.sh
-

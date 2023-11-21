@@ -2,8 +2,6 @@
 
 nextflow.enable.dsl=2
 
-input_exp = file(params.input)
-output_exp = params.output
 read_in = file(params.read_in)
 read_out = params.read_out
 pre_in = file(params.pre_in)
@@ -26,7 +24,6 @@ mgenes_in = params.mgenes_in
 text_in = file(params.text_in)
 mgenes_plot1 = params.mgenes_plot1
 mgenes_plot2 = params.mgenes_plot2
-mgenes_out = params.mgenes_out
 mgenes_plot3 = params.mgenes_plot3
 mgenes_plot4 = params.mgenes_plot4
 mgenes_plot5 = params.mgenes_plot5
@@ -104,7 +101,6 @@ process M_GENES {
 
     output: path("${mgenes_plot1}")
             path("${mgenes_plot2}")
-            path("${mgenes_out}")
             path("${mgenes_plot3}")
             path("${mgenes_plot4}")
             path("${mgenes_plot5}")
@@ -119,8 +115,8 @@ process M_GENES {
             
     script:
     """
-    4_marker_genes.py --mg_adata_input ${pca_out} --mg_outfile_mid ${mgenes_out} --mg_outfile_end ${mgenes_out2} \
-    --mg_outfile_withoutx ${mgenes_out3} --text_in ${text_in}
+    4_marker_genes.py --mg_adata_input ${pca_out} --mg_outfile_end ${mgenes_out2} \
+    --mg_outfile_withoutx ${mgenes_out3} --text_in ${text_in} 
     """
 }
 

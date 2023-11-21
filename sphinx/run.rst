@@ -11,53 +11,29 @@ can be called independently.
 Each of these workflows work as entry points that can be specified when running the
 pipeline through the command line.
 
-- The ``Full_pipeline`` workflow runs the other workflows as needed and
-  builds a Vitessce config file per dataset.
+- The ``-c`` Flag directs Nextflow to the configuration file ``nextflow.config``.
+- The ``-t`` Flag directs Nextflow to the html template file ``template.html`` to make the log. 
 - The ``Process_files`` workflow handles data files and their conversions.
 - The ``Process_images`` workflow handles image files and/or label image data and their conversions.
 
 Configurations and data are input through a :ref:`parameters yaml file <parameters_file>`.
 
-To run the ``Full_pipeline`` use
+To run the pipeline use
 
 .. code-block:: shell
 
-   nextflow run main.nf -params-file /path/to/params.yaml -entry Full_pipeline
-
+   nextflow run main.nf -c nextflow.config
 
 This will handle all input files, whether they are data files or images, for all datasets
 defined.
 
+To view a log of the pipeline use
+.. code-block:: shell
+
+   nextflow log modest_mcclintock -t template.html > provenance.html
+
 You can modify the entry point if you're interested in only getting the converted outputs.
 Use ``-entry Process_files`` or ``-entry Process_images`` as you need.
-
-Running using Docker 
---------------------
-
-The default pipeline will run on local executor without any type of environment creation. To run the pipeline using Docker containers use the ``-profile docker`` option:
-
-.. code-block:: shell
-
-   nextflow run main.nf \
-            -params-file /path/to/params.yaml \
-            -entry Full_pipeline \
-            -profile docker
-
-Pulling the containers when the pipline is launched may take a few minutes.
-
-Running using Singularity 
--------------------------
-
-The default pipeline will run on local executor without any type of environment creation. To run the pipeline using Singularity containers use the ``-profile singularity`` option:
-
-.. code-block:: shell
-
-   nextflow run main.nf \
-            -params-file /path/to/params.yaml \
-            -entry Full_pipeline \
-            -profile singularity
-
-Pulling the containers when the pipline is launched may take a few minutes.
 
 Running using Conda 
 -------------------

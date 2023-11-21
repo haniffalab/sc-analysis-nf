@@ -28,7 +28,7 @@ All set-up required to utilise the pipeline.
 
 ## Execution
 **NOTE: Ensure there are no spaces and each gene is separated by a comma**
-1. Edit "marker_genes.csv" to insert genes of interest. \
+1. Edit "marker_genes.csv" to insert genes of interest. 
 
         nano input/marker_genes.csv
         ## can also use VSCode or other TextEditor to edit file.

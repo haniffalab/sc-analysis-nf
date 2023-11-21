@@ -29,9 +29,8 @@ In this case, using `serve <https://www.npmjs.com/package/serve>`__, this is don
 
 Your view configs should then be accessible at ``http://localhost:3000/{project}-{dataset}-config.json``.
 
-You can then load them in a Vitessce instance like the `WebAtlas app <https://github.com/haniffalab/webatlas-app>`__ 
-deployed at `<https://webatlas.cog.sanger.ac.uk/latest/index.html>`__.
+You can then load them in a Vitessce instance like the.. ``REMOVED CONTENT``
 
 Specify your locally served view config through the ``config`` parameter like
-``https://webatlas.cog.sanger.ac.uk/latest/index.html?config=http://localhost:3000/{project}-{dataset}-config.json``
+``REMOVED CONTENT``
 and load this URL in your browser to visualize your data in a Vitessce viewer.
