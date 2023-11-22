@@ -1,5 +1,8 @@
-# sc-analysis-nf
-Pipeline processing raw data to generate Anndata objects and a number of plots following PBMC3K ScanPy tutorial.
+[![deploy-docs](https://github.com/haniffalab/sc-analysis-nf/actions/workflows/deploy-sphinx.yml/badge.svg)](https://github.com/haniffalab/sc-analysis-nf/actions/workflows/deploy-sphinx.yml)
+# sc-analysis-nf Pipeline
+Pipeline processing raw data to generate Anndata objects and a number of plots following ``PBMC3K ScanPy tutorial``.
+
+[![docs](https://img.shields.io/badge/Documentation-online-purple)](https://github.com/haniffalab/sc-analysis-nf)
 
 ## Installation
 All set-up required to utilise the pipeline. 
