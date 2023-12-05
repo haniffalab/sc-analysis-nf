@@ -1,0 +1,11 @@
+﻿gene,expression,tissue,disease
+tlr4,0.5,skin,yes
+cd8,0.4,skin,yes
+cd4,0.3,lung,yes
+tgfb,0.5,lung,yes
+infy,0.9,skin,no
+cd14,1,heart,no
+il2,0.7,heart,no
+il6,0.8,heart,no
+il10,0.2,lung,yes
+il4,0.1,skin,yes

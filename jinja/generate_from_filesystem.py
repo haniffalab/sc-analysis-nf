@@ -3,14 +3,20 @@ import os
 import random
 
 
- 
+
 root = os.path.dirname(os.path.abspath(__file__))
-templates_dir = os.path.join(root, 'templates')
+templates_dir = os.path.join(root, '/Users/nlg143/projects/sc-analysis-nf/jinja/templates')
 env = Environment( loader = FileSystemLoader(templates_dir) )
 template = env.get_template('index.html')
- 
- 
-filename = os.path.join(root, 'html', 'index.html')
+
+######### reading the csv ######### 
+import csv
+with open('jinja/html_csv_test.csv', newline='') as csvfile:
+    reader = csv.reader(csvfile)
+    build = list(reader)
+###################################
+
+filename = os.path.join(root, '/Users/nlg143/projects/sc-analysis-nf/jinja/html', 'index.html')
 with open(filename, 'w') as fh:
     fh.write(template.render(
         h1 = "SC-analysis-nf Pipeline Output Page",
@@ -22,8 +28,8 @@ with open(filename, 'w') as fh:
         img_5 = "/Users/nlg143/projects/sc-analysis-nf/output/figures/scatter_pct_counts_mt_2.png",
         img_6 = "/Users/nlg143/projects/sc-analysis-nf/output/figures/scatter_n_genes_by_counts_2.png",
         img_7 = "/Users/nlg143/projects/sc-analysis-nf/output/figures/filter_genes_dispersionscatter_2.png",
-        show_two = False,
         JOBID = random.randint(10, 10000),
+        mytable = build,
     ))
 
 

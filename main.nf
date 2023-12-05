@@ -34,6 +34,9 @@ mgenes_plot9 = params.mgenes_plot9
 mgenes_plot10 = params.mgenes_plot10
 mgenes_out2 = params.mgenes_out2
 mgenes_out3 = params.mgenes_out3
+html_in = file(params.html_in)
+template_html = file(params.template_html)
+//html_out = params.html_out
 
 
 process READ {
@@ -52,6 +55,8 @@ process READ {
 }
 
 process PREPRO {
+
+    conda 'scanpy_38'
 
     publishDir "output", mode: "copy"
 
@@ -120,9 +125,27 @@ process M_GENES {
     """
 }
 
+process GENERATE_HTML {
+
+    conda 'scanpy_38'
+
+    publishDir "output", mode: "copy"
+
+    input: path(html_in)
+           path(template_html)
+
+    output: html_out
+    
+    script:
+    """
+    5_generate_html.py --html_table ${html_in} --index_html ${html_out}
+    """
+}
+
 workflow { 
     READ(read_in)
     PREPRO(READ.out[0])
     PCA(PREPRO.out.pre_adata_out)
     M_GENES(PCA.out[5], text_in)
+    GENERATE_HTML(html_in, template_html)
 }
