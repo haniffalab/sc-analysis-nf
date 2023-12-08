@@ -11,7 +11,7 @@ template = env.get_template('index.html')
 
 ######### reading the csv ######### 
 import csv
-with open('jinja/html_csv_test.csv', newline='') as csvfile:
+with open('html_csv_test.csv', newline='') as csvfile:
     reader = csv.reader(csvfile)
     build = list(reader)
 ###################################
