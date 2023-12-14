@@ -36,7 +36,15 @@ mgenes_out2 = params.mgenes_out2
 mgenes_out3 = params.mgenes_out3
 html_in = file(params.html_in)
 template_html = file(params.template_html)
-//html_out = params.html_out
+html_out = params.html_out
+soup_in = params.soup_in 
+soup_raw_in = params.soup_raw_in 
+soup_barcodes_out = params.soup_barcodes_out
+soup_genes_out = params.soup_genes_out
+soup_matrix_out = params.soup_matrix_out
+soup_plot = params.soup_plot
+load_in = params.load_in
+load_raw_out = params.load_raw_out
 
 
 process READ {
@@ -142,10 +150,50 @@ process GENERATE_HTML {
     """
 }
 
+process SOUP {
+
+    conda 'cellrank'
+
+    publishDir "output/FCAImmP7241240soupX_filt/", mode: "copy", pattern:".mtx"
+    publishDir "output", mode: "copy", pattern:".png"
+
+    input: path(soup_in)
+           path(soup_raw_in)
+
+    output: path("${soup_barcodes_out}")
+            path("${soup_genes_out}")
+            path("${soup_matrix_out}")
+            soup_plot
+
+    
+    script:
+    """
+    ftskin_soupx.R 
+    """
+}
+
+process LOAD_DATA {
+
+    conda 'cellrank'
+
+    publishDir "output/FCAImmP7241240soupX_filt", mode: "copy"
+
+    input: path(soup_matrix_out)
+
+    output: path("${load_raw_out}")
+    
+    script:
+    """
+    loaddata_ftskin.py
+    """
+}
+ 
 workflow { 
     READ(read_in)
     PREPRO(READ.out[0])
     PCA(PREPRO.out.pre_adata_out)
     M_GENES(PCA.out[5], text_in)
     GENERATE_HTML(html_in, template_html)
+    SOUP(soup_in, soup_raw_in)
+    LOAD_DATA(SOUP.out[2])
 }
