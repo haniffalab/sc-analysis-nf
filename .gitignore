@@ -124,3 +124,5 @@ nextflow
 work/
 input/
 output/
+bin/.RData
+bin/.Rhistory

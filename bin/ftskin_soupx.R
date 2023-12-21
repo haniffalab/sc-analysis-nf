@@ -53,4 +53,5 @@ dev.off()
 ###################################
 out_dir= '/Users/nlg143/projects/sc-analysis-nf/output/'
 adj.matrix  <- adjustCounts(soup.channel, roundToInt = T)
-DropletUtils:::write10xCounts(paste0(out_dir, sample, 'soupX_filt'), adj.matrix)
+DropletUtils:::write10xCounts('soup', adj.matrix)
+
