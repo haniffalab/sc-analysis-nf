@@ -116,7 +116,7 @@ Connecting<span class="w"> </span>to<span class="w"> </span>github.com<span clas
 sc-analysis-nf/README.md/
 ...
 ...
-sc-analysis-nf/envs/environment.yaml
+sc-analysis-nf/envs/cellrank.yaml
 sc-analysis-nf/input/filtered_gene_bc_matrices/barcodes.tsv
 </pre></div>
 </div>
@@ -127,17 +127,17 @@ sc-analysis-nf/input/filtered_gene_bc_matrices/barcodes.tsv
 <p id="environment-conda">Follow these Environment Setup instructions using conda or manually installing the required components to run sc-analysis-nf.</p>
 <section id="using-conda">
 <h2>Using conda<a class="headerlink" href="#using-conda" title="Link to this heading"></a></h2>
-<p>If you have <a class="reference external" href="https://docs.conda.io/projects/miniconda/en/latest/">conda</a> or <a class="reference external" href="https://mamba.readthedocs.io/en/latest/mamba-installation.html">mamba</a> already installed then you can use the <code class="docutils literal notranslate"><span class="pre">environment.yaml</span></code> file included in the sc-analysis-nf release to create the environment.</p>
+<p>If you have <a class="reference external" href="https://docs.conda.io/projects/miniconda/en/latest/">conda</a> or <a class="reference external" href="https://mamba.readthedocs.io/en/latest/mamba-installation.html">mamba</a> already installed then you can use the <code class="docutils literal notranslate"><span class="pre">cellrank.yaml</span></code> file included in the sc-analysis-nf release to create the environment.</p>
 <div class="literal-block-wrapper docutils container" id="id6">
 <div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id6" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>nextflow_env<span class="w"> </span>-f<span class="w"> </span>environment.yml
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>nextflow_env<span class="w"> </span>-f<span class="w"> </span>cellrank.yaml
 </pre></div>
 </div>
 </div>
 <p>Then make sure you activate the <code class="docutils literal notranslate"><span class="pre">nextflow_env</span></code> environment beforer you use the pipeline.</p>
 <div class="literal-block-wrapper docutils container" id="id7">
 <div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id7" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>acitvate<span class="w"> </span>nextlfow_env
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>acitvate<span class="w"> </span>cellrank
 </pre></div>
 </div>
 </div>

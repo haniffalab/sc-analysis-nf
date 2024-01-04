@@ -32,15 +32,17 @@ A parameters file looks like this:
 
 .. code-block:: yaml
 
-    name: scanpy_38
+    name: cellrank
     channels:
-    - conda-forge
-    - defaults
+      - bioconda
+      - anaconda
+      - conda-forge
+      - defaults
     dependencies:
-    - fire==0.5.0
-    - leidenalg=0.10.1
-    - python=3.8.18
-    - scanpy=1.9.5
+      - anndata=0.9.2
+      - anyio=4.1.0
+      - appnope=0.1.3
+      - asttokens=2.4.1
   
 ***************
 Configuration file
@@ -53,6 +55,7 @@ A configuration file looks like this:
 .. code-block:: java 
 
     // nextflow.config    
+    // nextflow.config
 
     conda.enabled = true
 
@@ -60,14 +63,9 @@ A configuration file looks like this:
     params.read_in = "input/filtered_gene_bc_matrices/hg19/"
     params.read_out = "adata.h5ad"
 
+    // process PREPRO parameters
+    params.pre_in = "output/adata.h5ad"
     ...
-
-    // yaml file used to make the conda environment needed for 'READ|PREPRO|PCA|M_GENES'
-    process {
-        withName: 'READ|PREPRO|PCA|M_GENES' {
-            conda = "$projectDir/envs/environment.yaml"
-        }
-    }
 
 
 
