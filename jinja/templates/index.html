@@ -39,7 +39,7 @@
 
     <!-- Sidebar -->
     <div class="bg-light border-right" id="sidebar">
-        <div class="sidebar-heading">Sidebar Header</div>
+        <div class="Home page">Home page</div>
         <div class="list-group list-group-flush">
             <a href="#" class="list-group-item list-group-item-action bg-light">Dashboard</a>
             <a href="#" class="list-group-item list-group-item-action bg-light">Preprocessing</a>
@@ -118,46 +118,46 @@ body {font-family: Arial;}
 
 <div class="w3-container">
   <div class="tab">
-    <button class="tablinks" onclick="openCity(event, 'Gene expression plot')">Gene expression plot</button>
-    <button class="tablinks" onclick="openCity(event, 'Violin plots')">Violin plots</button>
-    <button class="tablinks" onclick="openCity(event, 'Scatter plots')">Scatter plots</button>
-    <button class="tablinks" onclick="openCity(event, 'Dispersion plots')">Dispersion plots</button>
+    <button class="tablinks" onclick="openCity(event, 'SOUPX outputs')">SOUPX outputs</button>
+    <button class="tablinks" onclick="openCity(event, 'Load data outputs')">Load data outputs</button>
+    <button class="tablinks" onclick="openCity(event, 'Scrublet outputs')">Scrublet outputs</button>
+    <button class="tablinks" onclick="openCity(event, 'Scanpy outputs')">Scanpy outputs</button>
   </div>
 </div>
-<div id="Gene expression plot" class="tabcontent">
-  <h3>Gene expression plot</h3>
+<div id="SOUPX outputs " class="tabcontent">
+  <h3>SOUPX outputs</h3>
   <p style="font-family:arial">Show those genes that yield the highest fraction of counts in each single cell, across all cells.</p>
   <img src={{ img_1 }} >
 
 </div>
 
-<div id="Violin plots" class="tabcontent">
-  <h3>Violin plots</h3>
+<div id="Load data outputs" class="tabcontent">
+  <h3>Load data outputs</h3>
   <p style="font-family:arial;font-weight:bold">A violin plot of some of the computed quality measures: </p>
-  <p style="font-family:arial">  - The number of genes expressed in the count matrix (Left)</p>
-  <p style="font-family:arial">  - The total counts per cell (Center) </p>
-<p style="font-family:arial">  - The percentage of counts in mitochondrial genes (Right) </p>
-
   <table width="100%" border="0">
     <tr>    
     <td><img src={{ img_2 }} alt="" align="left" style="width:100%"/></td>
     <td><img src={{ img_3 }} alt="" align="center" style="width:100%"/></td>
-    <td><img src={{ img_4 }} alt="" align="right" style="width:100%"/></td>
     </tr>
   </table>
 </div>
 
-<div id="Scatter plots" class="tabcontent">
-  <h3>Scatter plots</h3>
+<div id="Scrublet outputs" class="tabcontent">
+  <h3>Scrublet outputs</h3>
   <p style="font-family:arial">  Scatter Plots showing removed cells that have too many mitochondrial genes expressed (Left) or too many total counts (Right):  </p>
+  <img src={{ img_4 }} >
   <img src={{ img_5 }} >
-  <img src={{ img_6 }} >
 </div>
 
-<div id="Dispersion plots" class="tabcontent">
-  <h3>Dispersion plots</h3>
+<div id="Scanpy outputs" class="tabcontent">
+  <h3>Scanpy outputs</h3>
   <p style="font-family:arial"> Scatter Plots identifying highly-variable genes (Normalised: Left, Not-normalised: Right)</p>
-  <img src={{ img_7 }} >
+  <table width="100%" border="0">
+    <tr>    
+    <td><img src={{ img_6 }} alt="" align="left" style="width:100%"/></td>
+    <td><img src={{ img_7 }} alt="" align="center" style="width:100%"/></td>
+    </tr>
+  </table>
 </div>
 
 <script>

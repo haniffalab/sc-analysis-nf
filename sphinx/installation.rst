@@ -37,7 +37,7 @@ Change directory into the new repo.
    sc-analysis-nf/README.md/
    ...
    ...
-   sc-analysis-nf/envs/environment.yaml
+   sc-analysis-nf/envs/cellrank.yaml
    sc-analysis-nf/input/filtered_gene_bc_matrices/barcodes.tsv
 
 .. _environment:
@@ -52,19 +52,19 @@ Follow these Environment Setup instructions using conda or manually installing t
 Using conda
 -----------
 
-If you have `conda`_ or `mamba`_ already installed then you can use the ``environment.yaml`` file included in the sc-analysis-nf release to create the environment.
+If you have `conda`_ or `mamba`_ already installed then you can use the ``cellrank.yaml`` file included in the sc-analysis-nf release to create the environment.
 
 .. code-block:: shell
    :caption: Input
 
-   conda create -n nextflow_env -f environment.yml
+   conda create -n nextflow_env -f cellrank.yaml
 
 Then make sure you activate the ``nextflow_env`` environment beforer you use the pipeline.
 
 .. code-block:: shell
    :caption: Input
 
-   conda acitvate nextlfow_env 
+   conda acitvate cellrank 
 
 
 .. _environment_manual:
