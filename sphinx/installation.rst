@@ -59,7 +59,7 @@ If you have `conda`_ or `mamba`_ already installed then you can use the ``cellra
 
    conda create -n nextflow_env -f cellrank.yaml
 
-Then make sure you activate the ``nextflow_env`` environment beforer you use the pipeline.
+Then make sure you activate the ``cellrank`` environment before you use the pipeline.
 
 .. code-block:: shell
    :caption: Input

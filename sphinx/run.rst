@@ -32,6 +32,9 @@ To view a log of the pipeline use
 
    nextflow log modest_mcclintock -t template.html > provenance.html
 
+***************
+Leaving this content here for now as a template for future adjustments to the documentation.
+***************
 You can modify the entry point if you're interested in only getting the converted outputs.
 Use ``-entry Process_files`` or ``-entry Process_images`` as you need.
 

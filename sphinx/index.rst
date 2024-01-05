@@ -27,6 +27,7 @@ The pipeline also generates a series of plots uncovering the results of the QC p
    configuration
    run
    testing
+   visualise
 
 Indices and tables
 ==================
