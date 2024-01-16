@@ -64,7 +64,7 @@ process GENERATE_HTML {
     
     script:
     """
-    5_generate_html.py --html_table ${html_in} --index_html ${html_out}
+    generate_html.py --html_table ${html_in} --index_html ${html_out}
     """
 }
 
