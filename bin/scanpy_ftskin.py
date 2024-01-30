@@ -224,7 +224,7 @@ sc.pp.scale(adata_normalised, max_value=10)
 sc.tl.pca(adata_normalised, svd_solver='arpack')
 sc.pl.pca(adata_normalised, color='CST3', save="_plot24_normalised.png", show=False)
 #plot25
-sc.pl.umap(adata, color=['pcw', 'sanger_id', 'gender', 'sorting', 'chemistry_sorting'], save="_metadata.png", show=False)
+sc.pl.umap(adata_normalised, color=['pcw', 'sanger_id', 'gender', 'sorting', 'chemistry_sorting'], save="_metadata.png", show=False)
 
 adata.layers
 
@@ -235,17 +235,15 @@ adata.layers
 
 # Remove sample X due to bad quality
 #plot26
-sc.pl.violin(adata, ['n_genes_by_counts'],rotation=90, groupby="sanger_id", save="_n_genes_by_counts_sangerid.png", show=False)
+sc.pl.violin(adata_normalised, ['n_genes_by_counts'],rotation=90, groupby="sanger_id", save="_n_genes_by_counts_sangerid.png", show=False)
 #plot27
-sc.pl.violin(adata, ['total_counts'],rotation=90, groupby="sanger_id", save="_total_counts_sangerid.png", show=False)
+sc.pl.violin(adata_normalised, ['total_counts'],rotation=90, groupby="sanger_id", save="_total_counts_sangerid.png", show=False)
 #plot28
-sc.pl.violin(adata, [ 'pct_counts_mt'],rotation=90,groupby="sanger_id", save="_pct_counts_mt_sangerid.png", show=False)
+sc.pl.violin(adata_normalised, [ 'pct_counts_mt'],rotation=90,groupby="sanger_id", save="_pct_counts_mt_sangerid.png", show=False)
 
 
-sc.tl.umap(adata, min_dist=0.3, spread=1.0,init_pos='spectral') # Using the default distance scaling from umap-learn
-#sc.pl.umap(adata,color = var_key,size =10)
-#sc.pl.umap(adata,color = batches,size =10,wspace=0.3)
-adata.obsm['X_umap_disp_03'] = adata.obsm['X_umap']
+sc.tl.umap(adata_normalised, min_dist=0.3, spread=1.0,init_pos='spectral') # Using the default distance scaling from umap-learn
+adata_normalised.obsm['X_umap_disp_03'] = adata_normalised.obsm['X_umap']
 
 adata.write('Fskin_obj_0_4_1.h5ad')
 

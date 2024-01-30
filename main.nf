@@ -53,7 +53,7 @@ scanpy_out = params.scanpy_out
 
 process GENERATE_HTML {
 
-    conda 'scanpy_38'
+    conda 'cellrank'
 
     publishDir "output", mode: "copy"
 
