@@ -121,8 +121,8 @@ venv.bak/
 nextflow
 .nextflow.log*
 .nextflow/
-work/
-input/
-output/
-bin/.RData
-bin/.Rhistory
+/work
+/input
+/output
+/bin/.RData
+/bin/.Rhistory

@@ -3,7 +3,7 @@
 nextflow.enable.dsl=2
 
 html_in = file(params.html_in)
-template_html = file(params.template_html)
+html_template_dir = file(params.html_template_dir)
 html_out = params.html_out
 soup_in = params.soup_in 
 soup_raw_in = params.soup_raw_in 
@@ -58,13 +58,13 @@ process GENERATE_HTML {
     publishDir "output", mode: "copy"
 
     input: path(html_in)
-           path(template_html)
+           path(html_template_dir)
 
     output: html_out //eventually want whole directory 
     
     script:
     """
-    generate_html.py --html_table ${html_in} --index_html ${html_out}
+    generate_html.py --html_table ${html_in} --index_html ${html_out} --html_template_dir ${html_template_dir}
     """
 }
 
@@ -170,7 +170,7 @@ process SCANPY {
 }
 
 workflow { 
-    GENERATE_HTML(html_in, template_html)
+    GENERATE_HTML(html_in, html_template_dir)
     SOUP(soup_in, soup_raw_in)
     LOAD_DATA(SOUP.out[2], load_metadata)
     SCRUBLET(LOAD_DATA.out[1])
