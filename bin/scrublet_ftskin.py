@@ -52,7 +52,7 @@ def calculate_expected_doublet_rate(adata_object):
     expected_rate = expected_rates[real_cells]
     return expected_rate
 
-adata = sc.read('/Users/nlg143/projects/sc-analysis-nf/output/FCAImmP7241240/Fskin_obj_0_2_1.h5ad')
+adata = sc.read('/sc-analysis-nf/output/FCAImmP7241240/Fskin_obj_0_2_1.h5ad')
 
 adata.obs['sanger_id'].unique()
 

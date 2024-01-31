@@ -37,8 +37,8 @@ def load_data(load_in:str, load_raw_out:str, metadata_in:str, load_meta_out:str)
 
     # Note: package versions can be located in dependencies at the bottom of the script
 
-    root_directory = '/Users/nlg143/projects/sc-analysis-nf/output/'
-    out_directory = '/Users/nlg143/projects/sc-analysis-nf/output/'
+    root_directory = '/sc-analysis-nf/output/'
+    out_directory = '/sc-analysis-nf/output/'
 
     sample = 'FCAImmP7241240'
 

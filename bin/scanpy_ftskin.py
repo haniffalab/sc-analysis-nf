@@ -16,7 +16,7 @@ import math
 from scipy.stats import median_abs_deviation
 ##UserWarning: h5py is running against HDF5 1.14.3 when it was built against 1.14.2, this may cause problems
 
-adata= sc.read('/Users/nlg143/projects/sc-analysis-nf/output/FCAImmP7241240/Fskin_obj_0_3_1.h5ad')
+adata= sc.read('/sc-analysis-nf/output/FCAImmP7241240/Fskin_obj_0_3_1.h5ad')
 adata.raw = adata
 sample_list = ['FCAImmP7241240']
 

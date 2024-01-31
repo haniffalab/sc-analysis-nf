@@ -2,9 +2,14 @@
 
 nextflow.enable.dsl=2
 
-html_in = file(params.html_in)
-html_template_dir = file(params.html_template_dir)
-html_out = params.html_out
+//irods_in = params.irods_in
+params.irods_in = null
+//irods_in_metadata = params.irods_in_metadata
+params.irods_in_metadata = null 
+//irods_out = params.irods_out
+params.irods_out = null 
+//irods_out_metadata = params.irods_out_metadata
+params.irods_out_metadata = null 
 soup_in = params.soup_in 
 soup_raw_in = params.soup_raw_in 
 soup_barcodes_out = params.soup_barcodes_out
@@ -49,28 +54,31 @@ scanpy_plot26 = params.scanpy_plot26
 scanpy_plot27 = params.scanpy_plot27
 scanpy_plot28 = params.scanpy_plot28
 scanpy_out = params.scanpy_out
+html_in = file(params.html_in)
+html_template_dir = file(params.html_template_dir)
+html_out = params.html_out
 
+process IRODS {
 
-process GENERATE_HTML {
-
-    conda 'cellrank'
+    conda 'environment'
 
     publishDir "output", mode: "copy"
 
-    input: path(html_in)
-           path(html_template_dir)
+    input: path(irods_in)
+           path(irods_in_metadata)
 
-    output: html_out //eventually want whole directory 
+    output: path("${irods_out}")
+            path("${irods_out_metadata}")
     
     script:
     """
-    generate_html.py --html_table ${html_in} --index_html ${html_out} --html_template_dir ${html_template_dir}
+    irods2lustre.sh 
     """
 }
 
 process SOUP {
 
-    conda 'cellrank'
+    conda 'environment'
 
     publishDir "output/FCAImmP7241240", mode: "copy"
 
@@ -91,7 +99,7 @@ process SOUP {
 
 process LOAD_DATA {
 
-    conda 'cellrank'
+    conda 'environment'
 
     publishDir "output/FCAImmP7241240", mode: "copy"
 
@@ -109,7 +117,7 @@ process LOAD_DATA {
 
 process SCRUBLET {
 
-    conda 'cellrank'
+    conda 'environment'
 
     publishDir "output/FCAImmP7241240", mode: "copy"
 
@@ -127,7 +135,7 @@ process SCRUBLET {
 
 process SCANPY {
 
-    conda 'cellrank'
+    conda 'environment'
 
     publishDir "output/FCAImmP7241240", mode: "copy"
 
@@ -169,10 +177,28 @@ process SCANPY {
     """
 }
 
+process GENERATE_HTML {
+
+    conda 'environment'
+
+    publishDir "output", mode: "copy"
+
+    input: path(html_in)
+           path(html_template_dir)
+
+    output: html_out //eventually want whole directory 
+    
+    script:
+    """
+    generate_html.py --html_table ${html_in} --index_html ${html_out} --html_template_dir ${html_template_dir}
+    """
+}
+
 workflow { 
-    GENERATE_HTML(html_in, html_template_dir)
+//    IRODS(irods_in,irods_in_metadata)
     SOUP(soup_in, soup_raw_in)
     LOAD_DATA(SOUP.out[2], load_metadata)
     SCRUBLET(LOAD_DATA.out[1])
     SCANPY(SCRUBLET.out[0])
+    GENERATE_HTML(html_in, html_template_dir)
 }

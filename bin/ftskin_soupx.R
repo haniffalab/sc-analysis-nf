@@ -24,7 +24,7 @@ library(ggplot2)
 library(knitr)
 
 ######## why use "=" here and then later change to "<-" ########
-dir= '/Users/nlg143/projects/sc-analysis-nf/input/'
+dir= '/sc-analysis-nf/input/'
 dir2= '/output/Gene/filtered/'
 dir2_raw='/output/Gene/raw/'
 
@@ -51,7 +51,7 @@ png("soup.channel.png", width = 6.67, height = 6.67, units = "in", res = 300)
 print(autoEstCont(soup.channel))
 dev.off()
 ###################################
-out_dir= '/Users/nlg143/projects/sc-analysis-nf/output/'
+out_dir= '/sc-analysis-nf/output/'
 adj.matrix  <- adjustCounts(soup.channel, roundToInt = T)
 DropletUtils:::write10xCounts('soup', adj.matrix)
 
