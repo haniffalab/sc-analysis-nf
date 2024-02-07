@@ -1,0 +1,7 @@
+name: dh21
+channels:
+  - defaults
+dependencies:
+  - python=3.8
+  - r-base
+prefix: /home/ndh122/anaconda3/envs/dh21
