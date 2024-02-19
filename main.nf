@@ -2,6 +2,7 @@
 
 nextflow.enable.dsl=2
 
+
 //irods_in = params.irods_in
 params.irods_in = null
 //irods_in_metadata = params.irods_in_metadata
@@ -60,8 +61,6 @@ html_out = params.html_out
 
 process IRODS {
 
-    conda 'environment'
-
     publishDir "output", mode: "copy"
 
     input: path(irods_in)
@@ -78,32 +77,28 @@ process IRODS {
 
 process SOUP {
 
-    conda 'environment'
+    publishDir "${params.outdir}/${params.sample}/${params.args.soupx_output_dir}", mode: "copy"
 
-    publishDir "output/FCAImmP7241240", mode: "copy"
+    input: path(input_dir)
 
-    input: path(soup_in)
-           path(soup_raw_in)
-
-    output: path("${soup_barcodes_out}")
-            path("${soup_genes_out}")
-            path("${soup_matrix_out}")
-            path("${soup_plot}")
-
+    output: path("adjusted_counts/barcodes.tsv")
+            path("adjusted_counts/genes.tsv")
+            path("adjusted_counts/matrix.mtx")
+            path("soup.channel.png")
     
     script:
     """
-    ftskin_soupx.R 
+    soupx.R ${input_dir} 
     """
 }
 
 process LOAD_DATA {
 
-    conda 'environment'
-
     publishDir "output/FCAImmP7241240", mode: "copy"
 
-    input: path(soup_matrix_out)
+    input: path(soup_barcodes_out)
+           path(soup_genes_out)
+           path(soup_matrix_out)
            path(load_metadata)
 
     output: path("${load_raw_out}")
@@ -111,13 +106,11 @@ process LOAD_DATA {
     
     script:
     """
-    loaddata_ftskin.py --load_in ${load_in} --metadata_in ${load_metadata} --load_raw_out ${load_raw_out} --load_meta_out ${load_meta_out}
+    loaddata.py --load_in ${soup_matrix_out} --metadata_in ${load_metadata} --load_raw_out ${load_raw_out} --load_meta_out ${load_meta_out}
     """
 }
 
 process SCRUBLET {
-
-    conda 'environment'
 
     publishDir "output/FCAImmP7241240", mode: "copy"
 
@@ -134,8 +127,6 @@ process SCRUBLET {
 }
 
 process SCANPY {
-
-    conda 'environment'
 
     publishDir "output/FCAImmP7241240", mode: "copy"
 
@@ -179,8 +170,6 @@ process SCANPY {
 
 process GENERATE_HTML {
 
-    conda 'environment'
-
     publishDir "output", mode: "copy"
 
     input: path(html_in)
@@ -196,8 +185,8 @@ process GENERATE_HTML {
 
 workflow { 
 //    IRODS(irods_in,irods_in_metadata)
-    SOUP(soup_in, soup_raw_in)
-    LOAD_DATA(SOUP.out[2], load_metadata)
+    SOUP(params.cellranger_dir)
+    LOAD_DATA(SOUP.out[0], SOUP.out[1], SOUP.out[2], params.load_metadata)
     SCRUBLET(LOAD_DATA.out[1])
     SCANPY(SCRUBLET.out[0])
     GENERATE_HTML(html_in, html_template_dir)

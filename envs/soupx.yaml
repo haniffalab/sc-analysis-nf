@@ -1,0 +1,11 @@
+name: soupx
+channels:
+  - defaults
+dependencies:
+  - python=3.8
+  - r-base
+  - conda-forge::fire
+  - anaconda::jinja2
+  - conda-forge::r-seurat
+  - conda-forge::r-soupx
+  - bioconda::bioconductor-dropletutils

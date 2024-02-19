@@ -4,4 +4,9 @@ channels:
 dependencies:
   - python=3.8
   - r-base
+  - conda-forge::fire
+  - anaconda::jinja2
+  - conda-forge::r-seurat
+  - conda-forge::r-soupx
+  - bioconductor-dropletutils
 prefix: /home/ndh122/anaconda3/envs/dh21
