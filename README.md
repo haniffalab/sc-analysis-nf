@@ -56,7 +56,7 @@ conda install -c conda-forge r-base
 conda install -c conda-forge fire
 conda install -c anaconda jinja2
 conda install -c conda-forge r-seurat
-conda install conda-forge::r-htmltools
+conda install -c conda-forge r-htmltools
 conda install -c conda-forge r-soupx
 conda install -c conda-forge -c bioconda bioconductor-dropletutils
 #conda install -c conda-forge scvi-tools=1.0.4

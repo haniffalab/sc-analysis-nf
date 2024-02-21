@@ -94,7 +94,7 @@ process SOUP {
 
 process LOAD_DATA {
 
-    publishDir "output/FCAImmP7241240", mode: "copy"
+    publishDir "${params.outdir}/${params.sample}", mode: "copy"
 
     input: path(soup_barcodes_out)
            path(soup_genes_out)
