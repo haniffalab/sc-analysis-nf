@@ -185,7 +185,7 @@ process GENERATE_HTML {
 
 workflow { 
 //    IRODS(irods_in,irods_in_metadata)
-    SOUP(params.cellranger_dir)
+    SOUP(file(params.cellranger_dir)) //ensure relative 
     LOAD_DATA(SOUP.out[0], SOUP.out[1], SOUP.out[2], params.load_metadata)
     SCRUBLET(LOAD_DATA.out[1])
     SCANPY(SCRUBLET.out[0])

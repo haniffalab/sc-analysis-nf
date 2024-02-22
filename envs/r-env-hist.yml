@@ -1,0 +1,16 @@
+name: r-env-hist
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - r-essentials
+  - r-base
+  - r-ggplot2
+  - r-knitr
+  - r-seurat=5.0.1
+  - r-seuratobject=5.0.1
+  - r-sp
+  - r-soupx
+  - r-biocmanager
+variables:
+  CONDA_SUBDIR: osx-64

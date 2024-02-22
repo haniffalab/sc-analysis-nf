@@ -16,6 +16,10 @@ args = commandArgs(trailingOnly=TRUE)
 #if (!requireNamespace("BiocManager", quietly = TRUE))
 #  install.packages("BiocManager")
 #BiocManager::install("DropletUtils")
+
+#list.of.packages <- c("Dropletutils")
+#new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+#if(length(new.packages)) BiocManager::install("DropletUtils")
 ##################################
 ##load packages
 library(Seurat)
@@ -23,6 +27,8 @@ library(SoupX)
 library(DropletUtils)
 library(ggplot2)
 library(knitr)
+library(sp)
+library(SeuratObject)
 
 # test if there is at least one argument: if not, return an error
 if (length(args)==0) {
