@@ -1,6 +1,6 @@
 outdir: ./output/
 sample: FCAImmP7241240
-cellranger_dir: input/FCAImmP7241240
+cellranger_dir: /home/ndh122/OneDrive/Downloads/FCAImmP7241240
 
 args:
   soupx_output_dir: "soupx"
