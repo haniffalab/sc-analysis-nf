@@ -31,7 +31,6 @@ def scanpy(samples: str):
     sc.pl.violin(adata, "pct_counts_mt", save="_qcmetrics_pctcountsmt.png", show=False ) #plot2
     sc.pl.scatter(adata, "total_counts", "n_genes_by_counts", color="pct_counts_mt", save="_qcmetrics.png", show=False)
     
-    #############################################################################
     # Automatic threshholding based on median absolute deviation (MAD)
     def is_outlier(adata, metric: str, nmads: int):
         M = adata.obs[metric]
@@ -79,7 +78,6 @@ def scanpy(samples: str):
             groupby="sanger_id", save="_all_counts.png", show=False)
     sc.pl.violin(adataQC, ['n_genes_by_counts', 'total_counts', 'pct_counts_mt'], multi_panel=True,
             groupby="sanger_id", save="_qc_all_counts.png", show=False)
-    sc.pl.highest_expr_genes(adata, n_top=20, save="_FCAImmP7241240.png", show=False )
 
     conditions = [
         (adata.obs['predicted_doublets'] == True),
@@ -93,8 +91,11 @@ def scanpy(samples: str):
     adata.obs['QC'] = np.select(conditions, values)
     adata.obs['QC'] = adata.obs['QC'].astype('category')
     adata.obs[['predicted_doublets','outlier', 'mt_outlier','n_genes_by_counts','QC']].head(10)
-
+    
     adata.layers["counts"] = adata.X.copy()
+
+##########################8. Feature selection #####################################################
+    sc.pl.highest_expr_genes(adata, n_top=20, save="_FCAImmP7241240.png", show=False ) ##FEATURE SELECTION?? 
 
     sc.pp.normalize_total(adata, target_sum=1e4)
     sc.pp.log1p(adata)
@@ -102,6 +103,7 @@ def scanpy(samples: str):
     sc.pp.highly_variable_genes(adata, min_mean=0.0125, max_mean=3, min_disp=0.5, batch_key='sanger_id')
     sc.pl.highly_variable_genes(adata, save="_scatter_FCAImmP7241240.png", show=False) # plot 7 
 
+##########################9. Dimensionality reduction ##########################################################
     adata.layers["raw"] = adata.X.copy()
 
     unique_donors = list(adata.obs['donor'].unique())
@@ -115,19 +117,21 @@ def scanpy(samples: str):
         print(f"Gender: {gender}")
         print(f"Number of Unique Donors: {unique_donors}\n")
         print(f"Unique pcw values: {unique_pcw}\n")
-
+############### Principal componant analysis (PCA)
     sc.pp.scale(adata, max_value=10)
     sc.tl.pca(adata, svd_solver='arpack')
     sc.pl.pca_scatter(adata, color='KRT4', save="_FCAImmP7241240.png", show=False) #plot 8
     sc.pl.pca_variance_ratio(adata, log=True, save="_FCAImmP7241240.png", show=False) #plot 9 
-
+##############nearest neighbour graph
     sc.pp.neighbors(adata, n_neighbors=15, n_pcs=50)
     sc.tl.umap(adata)
     ##plot 10
     sc.pl.umap(adata, color=['LYZ','MS4A1','CD3D'], save="_neighbour_FCAImmP7241240.png", show=False) #color need to be custom?
-    sc.tl.leiden(adata)
+    ## leiden is a clustering algorithm- Simone mentions it in clustering and annotation section. 
+    sc.tl.leiden(adata) #- 8. clustering 
    
-    # turn the below lists into csv files?? or are these always the same?
+    # This information can be used to identify & characterize cells at different stages of the cell cycle, 
+    # providing insights into cell proliferation, differentiation, & other biological processes.
     s_genes = ['MCM5','PCNA','TYMS','FEN1','MCM7','MCM4','RRM1','UNG','GINS2','MCM6','CDCA7','DTL','PRIM1',
             'UHRF1','CENPU','HELLS','RFC2','POLR1B','NASP','RAD51AP1','GMNN','WDR76','SLBP','CCNE2','UBR7',
             'POLD3','MSH2','ATAD2','RAD51','RRM2','CDC45','CDC6','EXO1','TIPIN','DSCC1','BLM','CASP8AP2',
@@ -180,6 +184,7 @@ def scanpy(samples: str):
     sc.pl.umap(adata, color=['S_score','G2M_score','leiden'], save="_cellcycle_leiden.png", show=False)
     adata.raw = adata
 
+########################6./7. normalisation happening here instead of being the second section #############################
     sc.pp.normalize_total(adata, target_sum=1e4)
     sc.pp.log1p(adata)
 
