@@ -6,37 +6,18 @@
 
 import scanpy as sc
 import os
-
-# import anndata as ad
+import fire
 import anndata as ad
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
-
 import seaborn as sns
 import math
-
-# from plotnine import *
 import scrublet as scr
 from scipy.stats import median_abs_deviation
 
-# import sctk as sk
-
-# import tables
-# import scipy.sparse as sp
-# from typing import Dict, Optional
-
-# Mark doublets using Scrublet
-# ~10000 cells per replicates so expected doublet rate is 7.6%
-# Needs to be done on a sample by sample basis
-
-
 def calculate_expected_doublet_rate(adata_object):
-    """
-    for a given adata object, using the number of cells in the object to return
-    the expected doublet rate and the number of cells in the object
-    """
     # expected values from https://uofuhealth.utah.edu/huntsman/shared-resources/gba/htg/single-cell/genomics-10x
     expected_rates = {
         1000: 0.008,
@@ -58,64 +39,53 @@ def calculate_expected_doublet_rate(adata_object):
     expected_rate = expected_rates[real_cells]
     return expected_rate
 
+def scrublet(samples: str):
+    ##reading in data
+    adata = sc.read("metadata_adata.h5ad")
 
-adata = sc.read("Fskin_obj_0_2_1.h5ad")
+    calculate_expected_doublet_rate(adata) # would be good to printed in html output page
+    sample_list = [samples] # how is best to over come this? same in the add_metadata.py script
 
-adata.obs["sanger_id"].unique()
-
-####would be good to hav this as a figure in html page
-calculate_expected_doublet_rate(adata)
-
-sample_list = ["FCAImmP7241240"]
-for param in ["sanger_id"]:
-    print(param)
-    print(adata.obs[param].value_counts(), "\n")
-
-for sample in sample_list:
-    adata_byid = adata[adata.obs.sanger_id == sample]
-    real_cells = math.ceil(adata_byid.shape[0] / 1000) * 1000
-    print(f"Sample {sample}, real_cells: {real_cells}")
-
-
-#### this is and issue (seemingly only worls at the start of a cell- is there alternative?)
-# %%capture
-samples_scrubbed = {}
-scrubs = {}
-for sample in sample_list:
-    adata_byid = adata[adata.obs.sanger_id == sample]
-    scrub = scr.Scrublet(
-        adata_byid.X, expected_doublet_rate=calculate_expected_doublet_rate(adata_byid)
-    )
-    adata_byid.obs["doublet_scores"], adata_byid.obs["predicted_doublets"] = (
-        scrub.scrub_doublets(
-            min_counts=2, min_cells=3, min_gene_variability_pctl=85, n_prin_comps=30
+    for sample in sample_list: 
+        adata_byid = adata[adata.obs.sanger_id == sample]
+        real_cells = math.ceil(adata_byid.shape[0] / 1000) * 1000
+    #### this is and issue (seemingly only worls at the start of a cell- is there alternative?)
+    samples_scrubbed = {}
+    scrubs = {}
+    for sample in sample_list: #
+        adata_byid = adata[adata.obs.sanger_id == sample]
+        scrub = scr.Scrublet(
+            adata_byid.X, expected_doublet_rate=calculate_expected_doublet_rate(adata_byid)
         )
-    )
-    samples_scrubbed[sample] = adata_byid
-    scrubs[sample] = scrub
+        adata_byid.obs["doublet_scores"], adata_byid.obs["predicted_doublets"] = (
+            scrub.scrub_doublets(
+                min_counts=2, min_cells=3, min_gene_variability_pctl=85, n_prin_comps=30
+            )
+        )
+        samples_scrubbed[sample] = adata_byid
+        scrubs[sample] = scrub
+    #  Run per lane, each sample as identified by sanger_id was sequenced on separate lane here
+    ## Plots 
+    for sample in scrubs:
+        scrubs[sample].plot_histogram()
+    plt.savefig("scrublet_histogram.png")
 
-#  Run per lane, each sample as identified by sanger_id was sequenced on separate lane here
+    for sample in scrubs:
+        scrubs[sample].set_embedding(
+            "UMAP", scr.get_umap(scrub.manifold_obs_, 10, min_dist=0.3)
+        )
+    ########################### plot above isnt saved? 
+    for sample in scrubs:
+        print(scrubs[sample])
+        scrubs[sample].plot_embedding("UMAP", order_points=True)
+    plt.savefig("scrublet_umap.png")
 
-# %matplotlib inline
-for sample in scrubs:
-    scrubs[sample].plot_histogram()
-plt.savefig("scrublet_histogram.png")
-# %matplotlib inline
-for sample in scrubs:
-    scrubs[sample].set_embedding(
-        "UMAP", scr.get_umap(scrub.manifold_obs_, 10, min_dist=0.3)
-    )
+    adata = ad.concat(samples_scrubbed, index_unique=None)
+    #writing out data 
+    adata.write("scrublet_adata.h5ad")
 
-# %matplotlib inline
-for sample in scrubs:
-    print(scrubs[sample])
-    scrubs[sample].plot_embedding("UMAP", order_points=True)
-plt.savefig("scrublet_umap.png")
-
-adata = ad.concat(samples_scrubbed, index_unique=None)
-
-adata.obs.sanger_id.unique()
-adata.write("Fskin_obj_0_3_1.h5ad")
+if __name__ == "__main__":
+    fire.Fire(scrublet)
 
 ###########################################
 # 3 total outputs (2 plots & 1 h5ad file) #

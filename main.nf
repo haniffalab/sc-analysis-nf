@@ -3,58 +3,11 @@
 nextflow.enable.dsl=2
 
 
-//irods_in = params.irods_in
 params.irods_in = null
-//irods_in_metadata = params.irods_in_metadata
 params.irods_in_metadata = null 
-//irods_out = params.irods_out
 params.irods_out = null 
-//irods_out_metadata = params.irods_out_metadata
 params.irods_out_metadata = null 
-soup_in = params.soup_in 
-soup_raw_in = params.soup_raw_in 
-soup_barcodes_out = params.soup_barcodes_out
-soup_genes_out = params.soup_genes_out
-soup_matrix_out = params.soup_matrix_out
-soup_plot = params.soup_plot
-load_in = params.load_in
-load_raw_out = params.load_raw_out
-load_metadata = params.load_metadata
-load_meta_out = params.load_meta_out
-scrub_in = params.scrub_in
-scrub_out= params.scrub_out
-scrub_histogram = params.scrub_histogram
-scrub_umap = params.scrub_umap
-scanpy_in = params.scanpy_in
-scanpy_plot1 = params.scanpy_plot1
-scanpy_plot2 = params.scanpy_plot2
-scanpy_plot3 = params.scanpy_plot3
-scanpy_plot4 = params.scanpy_plot4
-scanpy_plot5 = params.scanpy_plot5
-scanpy_plot6 = params.scanpy_plot6
-scanpy_plot7 = params.scanpy_plot7
-scanpy_plot8 = params.scanpy_plot8
-scanpy_plot9 = params.scanpy_plot9
-scanpy_plot10 = params.scanpy_plot10
-scanpy_plot11 = params.scanpy_plot11
-scanpy_plot12 = params.scanpy_plot12
-scanpy_plot13 = params.scanpy_plot13
-scanpy_plot14 = params.scanpy_plot14
-scanpy_plot15 = params.scanpy_plot15
-scanpy_plot16 = params.scanpy_plot16
-scanpy_plot17 = params.scanpy_plot17
-scanpy_plot18 = params.scanpy_plot18
-scanpy_plot19 = params.scanpy_plot19
-scanpy_plot20 = params.scanpy_plot20
-scanpy_plot21 = params.scanpy_plot21
-scanpy_plot22 = params.scanpy_plot22
-scanpy_plot23 = params.scanpy_plot23
-scanpy_plot24 = params.scanpy_plot24
-scanpy_plot25 = params.scanpy_plot25
-scanpy_plot26 = params.scanpy_plot26
-scanpy_plot27 = params.scanpy_plot27
-scanpy_plot28 = params.scanpy_plot28
-scanpy_out = params.scanpy_out
+
 html_in = file(params.html_in)
 html_template_dir = file(params.html_template_dir)
 html_out = params.html_out
@@ -91,86 +44,127 @@ process SOUP {
     soupx.R ${input_dir} 
     """
 }
-
+/////////////////////////////////////////////////////////////////////////////////////////
 process LOAD_DATA {
 
     publishDir "${params.outdir}/${params.sample}", mode: "copy"
 
-    input: path(soup_barcodes_out)
+    input: path(soup_barcodes_out)  
            path(soup_genes_out)
            path(soup_matrix_out)
-           path(load_metadata)
+           path(metadata_file)
 
-    output: path("${load_raw_out}")
-            path("${load_meta_out}")
+    output: path("${params.load_raw_out}") //"loaddata_raw.h5ad"
+            path("${params.load_meta_out}") //"loaddata.h5ad"
     
     script:
     """
-    loaddata.py --load_in ${soup_matrix_out} --metadata_in ${load_metadata} --load_raw_out ${load_raw_out} --load_meta_out ${load_meta_out}
+    loaddata.py --load_in ${soup_matrix_out} --metadata_in ${metadata_file} --load_raw_out ${params.load_raw_out} --load_meta_out ${params.load_meta_out}
+    """
+}
+//////////////////////////////////////////////////////////////////////////////////////////
+
+process LOAD_MTX {
+
+    publishDir "${params.outdir}/${params.sample}", mode: "copy"
+
+    input: path(barcodes)  
+           path(genes)
+           path(matrix)
+
+    output: path("adata.h5ad") 
+    
+    script:
+    """
+    load_mtx.py 
     """
 }
 
-process SCRUBLET {
+process ADD_METADATA {
 
-    publishDir "output/FCAImmP7241240", mode: "copy"
+    publishDir "${params.outdir}/${params.sample}", mode: "copy"
 
-    input: path(load_meta_out)
+    input: path(soup_barcodes_out)  
+           file(params.metadata_file)
+           file(params.sample)
 
-    output: path("${scrub_out}")
-            path("${scrub_histogram}")
-            path("${scrub_umap}")
+    output: path("metadata_adata.h5ad")
     
     script:
     """
-    scrublet_ftskin.py 
+    add_metadata.py \
+    --metadata_in ${params.metadata_file} \
+    --samples ${params.sample}
+    """
+}
+
+
+process SCRUBLET {
+
+    publishDir "${params.outdir}/${params.sample}/${params.args.scrublet_output_dir}", mode: "copy"
+
+
+    input: path(add_meta_out)
+           file(params.sample)
+
+    output: path("scrublet_adata.h5ad") 
+            path("scrublet_histogram.png")
+            path("scrublet_umap.png")
+    
+    script:
+    """
+    scrublet_ftskin.py \
+        --samples ${params.sample}
     """
 }
 
 process SCANPY {
 
-    publishDir "output/FCAImmP7241240", mode: "copy"
+    publishDir "${params.outdir}/${params.sample}/${params.args.scanpy_output_dir}", mode: "copy"
 
     input: path(scrub_out)
+           file(params.sample)
 
-    output: path("${scanpy_plot1}")
-            path("${scanpy_plot2}")
-            path("${scanpy_plot3}")
-            path("${scanpy_plot4}")
-            path("${scanpy_plot5}")
-            path("${scanpy_plot6}")
-            path("${scanpy_plot7}")
-            path("${scanpy_plot8}")
-            path("${scanpy_plot9}")
-            path("${scanpy_plot10}")
-            path("${scanpy_plot11}")
-            path("${scanpy_plot12}")
-            path("${scanpy_plot13}")
-            path("${scanpy_plot14}")
-            path("${scanpy_plot15}")
-            path("${scanpy_plot16}")
-            path("${scanpy_plot17}")
-            path("${scanpy_plot18}")
-            path("${scanpy_plot19}")
-            path("${scanpy_plot20}")
-            path("${scanpy_plot21}")
-            path("${scanpy_plot22}")
-            path("${scanpy_plot23}")
-            path("${scanpy_plot24}")
-            path("${scanpy_plot25}")
-            path("${scanpy_plot26}")
-            path("${scanpy_plot27}")
-            path("${scanpy_plot28}")
-            path("${scanpy_out}")
+    output: path("qcmetrics_totalcounts.png") //qcmetrics_totalcounts.png
+            path("figures/violin_qcmetrics_pctcountsmt.png") //figures/violin_qcmetrics_pctcountsmt.png
+            path("figures/scatter_qcmetrics.png") //figures/scatter_qcmetrics.png
+            path("figures/violin_all_counts.png") //figures/violin_all_counts.png
+            path("figures/violin_qc_all_counts.png") //figures/violin_qc_all_counts.png
+            path("figures/highest_expr_genes_FCAImmP7241240.png") //figures/highest_expr_genes_FCAImmP7241240.png *
+            path("figures/filter_genes_dispersion_scatter_FCAImmP7241240.png") //figures/filter_genes_dispersion_scatter_FCAImmP7241240.png *
+            path("figures/pca_FCAImmP7241240.png") //figures/pca_FCAImmP7241240.png
+            path("figures/pca_variance_ratio_FCAImmP7241240.png") //figures/pca_variance_ratio_FCAImmP7241240.png *
+            path("figures/umap_neighbour_FCAImmP7241240.png") //figures/umap_neighbour_FCAImmP7241240.png *
+            path("figures/umap_doubletscores.png") //figures/umap_doubletscores.png
+            path("figures/umap_qc_doubletscores.png") //figures/umap_qc_doubletscores.png
+            path("figures/umap_leiden.png") //figures/umap_leiden.png
+            path("figures/umap_pct_counts.png") //figures/umap_pct_counts.png
+            path("figures/violin_leiden_pct_counts.png") //figures/violin_leiden_pct_counts.png
+            path("figures/umap_cellcycle.png") //figures/umap_cellcycle.png
+            path("figures/violin_cellcycle.png") //figures/violin_cellcycle.png
+            path("figures/violin_outlier.png") //figures/violin_outlier.png
+            path("figures/umap_plot19.png") //figures/umap_plot19.png *
+            path("figures/umap_plot20_leiden.png") //figures/umap_plot20_leiden.png *
+            path("figures/violin_pctcounts_leiden.png") //figures/violin_pctcounts_leiden.png
+            path("figures/violin_outlier_leiden.png") //figures/violin_outlier_leiden.png
+            path("figures/umap_cellcycle_leiden.png") //figures/umap_cellcycle_leiden.png
+            path("figures/pca_plot24_normalised.png") //figures/pca_plot24_normalised.png *
+            path("figures/umap_metadata.png") //figures/umap_metadata.png
+            path("figures/violin_n_genes_by_counts_sangerid.png") //figures/violin_n_genes_by_counts_sangerid.png *
+            path("figures/violin_total_counts_sangerid.png") //figures/violin_total_counts_sangerid.png *
+            path("figures/violin_pct_counts_mt_sangerid.png") //figures/violin_pct_counts_mt_sangerid.png *
+            path("scanpy_adata.h5ad") //scanpy_adata.h5ad
     
     script:
     """
-    scanpy_ftskin.py 
+    scanpy_ftskin.py \
+        --samples ${params.sample}
     """
 }
 
 process GENERATE_HTML {
 
-    publishDir "output", mode: "copy"
+    publishDir "output", mode: "copy" //"${params.outdir}/${params.sample}/${params.args.html_output_dir}"
 
     input: path(html_in)
            path(html_template_dir)
@@ -179,15 +173,21 @@ process GENERATE_HTML {
     
     script:
     """
-    generate_html.py --html_table ${html_in} --index_html ${html_out} --html_template_dir ${html_template_dir}
+    generate_html.py \
+    --html_table ${html_in} \
+    --index_html ${html_out} \
+    --html_template_dir ${html_template_dir}
     """
 }
 
 workflow { 
 //    IRODS(irods_in,irods_in_metadata)
     SOUP(file(params.cellranger_dir)) //ensure relative 
-    LOAD_DATA(SOUP.out[0], SOUP.out[1], SOUP.out[2], params.load_metadata)
-    SCRUBLET(LOAD_DATA.out[1])
-    SCANPY(SCRUBLET.out[0])
+    LOAD_DATA(SOUP.out[0],SOUP.out[1], SOUP.out[2], file(params.metadata_file))
+    LOAD_MTX(SOUP.out[0],SOUP.out[1], SOUP.out[2])
+    ADD_METADATA(LOAD_MTX.out[0], file(params.metadata_file), params.sample)
+    //SCRUBLET(LOAD_DATA.out[1])
+    SCRUBLET(ADD_METADATA.out[0], params.sample)
+    SCANPY(SCRUBLET.out[0], params.sample)
     GENERATE_HTML(html_in, html_template_dir)
 }

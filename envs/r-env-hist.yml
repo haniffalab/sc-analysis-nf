@@ -3,14 +3,15 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - r-essentials
-  - r-base
-  - r-ggplot2
-  - r-knitr
-  - r-seurat=5.0.1
-  - r-seuratobject=5.0.1
-  - r-sp
-  - r-soupx
-  - r-biocmanager
+  - r-essentials #r::r-essentials
+  - r-base #conda-forge::r-base
+  - r-ggplot2 #conda-forge::r-ggplot2
+  - r-knitr #conda-forge::r-knitr
+  - r-seurat=5.0.1 #bioconda::r-seurat
+  - r-seuratobject=5.0.1 #bioconda::r-seuratobject
+  - r-sp #conda-forge::r-sp
+  - r-soupx #conda-forge::r-soupx
+  - r-biocmanager #not needed? 
+  - bioconductor-dropletutils
 variables:
   CONDA_SUBDIR: osx-64
