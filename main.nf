@@ -162,6 +162,61 @@ process SCANPY {
     """
 }
 
+process FILTER_READS {
+
+    publishDir "${params.outdir}/${params.sample}/${params.args.filter_reads_output_dir}", mode: "copy"
+
+
+    input: path(scrub_out)
+           file(params.sample)
+
+    output: path("filtered_reads.h5ad") 
+            path("qcmetrics_totalcounts.png") //qcmetrics_totalcounts.png
+            path("figures/violin_qcmetrics_pctcountsmt.png") //figures/violin_qcmetrics_pctcountsmt.png
+            path("figures/scatter_qcmetrics.png") //figures/scatter_qcmetrics.png
+            path("figures/violin_all_counts.png") //figures/violin_all_counts.png
+            path("figures/violin_qc_all_counts.png") //figures/violin_qc_all_counts.png
+    
+    script:
+    """
+    filter_reads.py \
+        --samples ${params.sample}
+    """
+}
+
+process FEATURE_SELECTION {
+
+    publishDir "${params.outdir}/${params.sample}/${params.args.feature_selection_output_dir}", mode: "copy"
+
+
+    input: path(filter_reads_out)
+
+    output: path("feature_selection.h5ad") 
+            path("figures/highest_expr_genes_FCAImmP7241240.png") //*
+            path("figures/filter_genes_dispersion_scatter_FCAImmP7241240.png") //*
+    
+    script:
+    """
+    feature_selection.py 
+    """
+}
+
+process DIMENSIONALITY {
+
+    publishDir "${params.outdir}/${params.sample}/${params.args.dimensionality_output_dir}", mode: "copy"
+
+
+    input: path(feature_selection_out)
+
+    output: path("dimensionality.h5ad") 
+
+    
+    script:
+    """
+    dimensionality.py 
+    """
+}
+
 process GENERATE_HTML {
 
     publishDir "output", mode: "copy" //"${params.outdir}/${params.sample}/${params.args.html_output_dir}"
@@ -189,5 +244,7 @@ workflow {
     //SCRUBLET(LOAD_DATA.out[1])
     SCRUBLET(ADD_METADATA.out[0], params.sample)
     SCANPY(SCRUBLET.out[0], params.sample)
+    FILTER_READS(SCRUBLET.out[0], params.sample)
+    FEATURE_SELECTION(FILTER_READS.out[0])
     GENERATE_HTML(html_in, html_template_dir)
 }

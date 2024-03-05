@@ -14,8 +14,17 @@ args:
     compute_embeddings: False
   scanpy_output_dir: "scanpy"
   h5ad:
+    compute_embeddings: False  
+  filter_reads_output_dir: "filter_reads"
+  h5ad:
+    compute_embeddings: False
+  feature_selection_output_dir: "feature_selection"
+  h5ad:
     compute_embeddings: False
   html_output_dir: "html"
+  h5ad:
+    compute_embeddings: False
+  dimensionality_output_dir: "dimensionality"
   h5ad:
     compute_embeddings: False
 
