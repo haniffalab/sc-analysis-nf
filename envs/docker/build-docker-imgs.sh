@@ -11,5 +11,5 @@ VERSION=latest
 #   ./build-docker-imgs.sh
 #
 
-docker build --platform=linux/amd64 -t haniffalab/nf-soupx:${VERSION} -f ./soupx/Dockerfile .
-docker build --platform=linux/amd64 -t haniffalab/nf-scanpy:${VERSION} -f ./scanpy/Dockerfile .
+docker build -t haniffalab/nf-soupx:${VERSION} -f ./soupx/Dockerfile .
+docker build -t haniffalab/nf-scanpy:${VERSION} -f ./scanpy/Dockerfile .
