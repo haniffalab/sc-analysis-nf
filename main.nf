@@ -54,8 +54,8 @@ process LOAD_DATA {
            path(soup_matrix_out)
            path(metadata_file)
 
-    output: path("${params.load_raw_out}") //"loaddata_raw.h5ad"
-            path("${params.load_meta_out}") //"loaddata.h5ad"
+    output: path("${params.load_raw_out}") //"adata_rawdata.h5ad"
+            path("${params.load_meta_out}") //"adata_loaddata.h5ad"
     
     script:
     """
@@ -72,7 +72,7 @@ process LOAD_MTX {
            path(genes)
            path(matrix)
 
-    output: path("adata.h5ad") 
+    output: path("adata.h5ad") //path("${params.mtx_adata}")
     
     script:
     """
@@ -88,7 +88,7 @@ process ADD_METADATA {
            file(params.metadata_file)
            file(params.sample)
 
-    output: path("metadata_adata.h5ad")
+    output: path("adata_metadata.h5ad") //path("${params.meta_adata}")
     
     script:
     """
@@ -107,13 +107,13 @@ process SCRUBLET {
     input: path(add_meta_out)
            file(params.sample)
 
-    output: path("scrublet_adata.h5ad") 
+    output: path("adata_scrublet.h5ad") //path("${params.scrublet_adata}")
             path("scrublet_histogram.png")
             path("scrublet_umap.png")
     
     script:
     """
-    scrublet_ftskin.py \
+    scrublet_sc.py \
         --samples ${params.sample}
     """
 }
@@ -153,7 +153,7 @@ process SCANPY {
             path("figures/violin_n_genes_by_counts_sangerid.png") //figures/violin_n_genes_by_counts_sangerid.png *
             path("figures/violin_total_counts_sangerid.png") //figures/violin_total_counts_sangerid.png *
             path("figures/violin_pct_counts_mt_sangerid.png") //figures/violin_pct_counts_mt_sangerid.png *
-            path("scanpy_adata.h5ad") //scanpy_adata.h5ad
+            path("scanpy_adata.h5ad") 
     
     script:
     """
@@ -170,12 +170,12 @@ process FILTER_READS {
     input: path(scrub_out)
            file(params.sample)
 
-    output: path("filtered_reads.h5ad") 
-            path("qcmetrics_totalcounts.png") //qcmetrics_totalcounts.png
-            path("figures/violin_qcmetrics_pctcountsmt.png") //figures/violin_qcmetrics_pctcountsmt.png
-            path("figures/scatter_qcmetrics.png") //figures/scatter_qcmetrics.png
-            path("figures/violin_all_counts.png") //figures/violin_all_counts.png
-            path("figures/violin_qc_all_counts.png") //figures/violin_qc_all_counts.png
+    output: path("adata_filtered.h5ad") //path("${params.filter_adata}")
+            path("qcmetrics_totalcounts.png") 
+            path("figures/violin_qcmetrics_pctcountsmt.png") 
+            path("figures/scatter_qcmetrics.png")
+            path("figures/violin_all_counts.png") 
+            path("figures/violin_qc_all_counts.png")
     
     script:
     """
@@ -191,7 +191,7 @@ process FEATURE_SELECTION {
 
     input: path(filter_reads_out)
 
-    output: path("feature_selection.h5ad") 
+    output: path("adata_feature_selection.h5ad") //path("${params.feature_selection_adata}")
             path("figures/highest_expr_genes_FCAImmP7241240.png") //*
             path("figures/filter_genes_dispersion_scatter_FCAImmP7241240.png") //*
     
@@ -208,12 +208,51 @@ process DIMENSIONALITY {
 
     input: path(feature_selection_out)
 
-    output: path("dimensionality.h5ad") 
+    output: path("adata_dimensionality.h5ad") //path("${params.dimensionality_adata}")
+            path("figures/pca_FCAImmP7241240.png") 
+            path("figures/pca_variance_ratio_FCAImmP7241240.png") // *
+            path("figures/umap_neighbour_FCAImmP7241240.png") // *
+            path("figures/umap_doubletscores.png") 
+            path("figures/umap_qc_doubletscores.png") 
+            path("figures/umap_leiden.png")
+            path("figures/umap_pct_counts.png")
+            path("figures/violin_leiden_pct_counts.png") 
+            path("figures/umap_cellcycle.png") 
+            path("figures/violin_cellcycle.png") 
+            path("figures/violin_outlier.png") 
+            path("figures/umap_plot19.png") // *
+            path("figures/umap_plot20_leiden.png") // *
+            path("figures/violin_pctcounts_leiden.png") 
+            path("figures/violin_outlier_leiden.png") 
+            path("figures/umap_cellcycle_leiden.png")
+
 
     
     script:
     """
-    dimensionality.py 
+    dimensionality_reduction.py \
+        --input_file ${feature_selection_out}
+    """
+}
+
+process COUNT_TRANSFORMATION {
+
+    publishDir "${params.outdir}/${params.sample}/${params.args.count_transformation_output_dir}", mode: "copy"
+
+
+    input: path(dimensionaltiy_out)
+
+    output: path("adata_transformation.h5ad") //path("${params.count_transformation}")
+            path("figures/pca_plot24_normalised.png") // *
+            path("figures/umap_metadata.png") //
+            path("figures/violin_n_genes_by_counts_sangerid.png") // *
+            path("figures/violin_total_counts_sangerid.png") // *
+            path("figures/violin_pct_counts_mt_sangerid.png") // *
+    
+    script:
+    """
+    count_transformation.py \
+        --dimensionality_out ${dimensionaltiy_out}
     """
 }
 
@@ -238,13 +277,13 @@ process GENERATE_HTML {
 workflow { 
 //    IRODS(irods_in,irods_in_metadata)
     SOUP(file(params.cellranger_dir)) //ensure relative 
-    LOAD_DATA(SOUP.out[0],SOUP.out[1], SOUP.out[2], file(params.metadata_file))
     LOAD_MTX(SOUP.out[0],SOUP.out[1], SOUP.out[2])
     ADD_METADATA(LOAD_MTX.out[0], file(params.metadata_file), params.sample)
-    //SCRUBLET(LOAD_DATA.out[1])
     SCRUBLET(ADD_METADATA.out[0], params.sample)
-    SCANPY(SCRUBLET.out[0], params.sample)
+    //SCANPY(SCRUBLET.out[0], params.sample)
     FILTER_READS(SCRUBLET.out[0], params.sample)
     FEATURE_SELECTION(FILTER_READS.out[0])
+    DIMENSIONALITY(FEATURE_SELECTION.out[0])
+    COUNT_TRANSFORMATION(DIMENSIONALITY.out[0])
     GENERATE_HTML(html_in, html_template_dir)
 }

@@ -14,9 +14,9 @@ import seaborn as sns
 import math
 from scipy.stats import median_abs_deviation
 
-def dimensionality(samples: str):
+def dimensionality(input_file: str):
 
-    adata= sc.read("feature_selection.h5ad")
+    adata= sc.read(input_file)
 
     unique_donors = list(adata.obs['donor'].unique())
     print(unique_donors)
@@ -96,7 +96,7 @@ def dimensionality(samples: str):
     sc.pl.umap(adata, color=['S_score','G2M_score','leiden'], save="_cellcycle_leiden.png", show=False)
     #adata.raw = adata
 
-    adata.write("dimensionality.h5ad")
+    adata.write("adata_dimensionality.h5ad")
 
 
 if __name__ == "__main__":

@@ -78,7 +78,7 @@ def add_metadata(metadata_in: str, samples: str):
 
     adata.obs["pcw"] = adata.obs["pcw"].astype(str)
 
-    adata.write("metadata_adata.h5ad")
+    adata.write("adata_metadata.h5ad")
 
 
 if __name__ == "__main__":
