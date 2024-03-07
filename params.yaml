@@ -1,31 +1,18 @@
 outdir: ./output/
 sample: FCAImmP7241240
-cellranger_dir: /Users/nlg143/projects/review2/sc-analysis-nf/input/FCAImmP7241240
-metadata_file: /Users/nlg143/projects/review2/sc-analysis-nf/input/old_raw_metadata.csv
+cellranger_dir: ./input/FCAImmP7241240
+metadata_file: ./input/old_raw_metadata.csv
 load_raw_out: rawdata.h5ad
 load_meta_out: loaddata.h5ad #should this be defined here? or in script.py?
 
 args:
-  soupx_output_dir: "soupx"
-  h5ad:
-    compute_embeddings: False
+  soupx:
+    soupx_output_dir: "soupx"
+  load_mtx:
+    adata_filename: "adata.h5ad"
   scrublet_output_dir: "scrublet"
-  h5ad:
-    compute_embeddings: False
   scanpy_output_dir: "scanpy"
-  h5ad:
-    compute_embeddings: False  
   filter_reads_output_dir: "filter_reads"
-  h5ad:
-    compute_embeddings: False
   feature_selection_output_dir: "feature_selection"
-  h5ad:
-    compute_embeddings: False
   html_output_dir: "html"
-  h5ad:
-    compute_embeddings: False
   dimensionality_output_dir: "dimensionality"
-  h5ad:
-    compute_embeddings: False
-
-

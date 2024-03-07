@@ -17,6 +17,7 @@ import math
 import scrublet as scr
 from scipy.stats import median_abs_deviation
 
+
 def calculate_expected_doublet_rate(adata_object):
     # expected values from https://uofuhealth.utah.edu/huntsman/shared-resources/gba/htg/single-cell/genomics-10x
     expected_rates = {
@@ -39,23 +40,29 @@ def calculate_expected_doublet_rate(adata_object):
     expected_rate = expected_rates[real_cells]
     return expected_rate
 
-def scrublet(samples: str):
+
+def run_scrublet(samples: str):
     ##reading in data
-    adata = sc.read("metadata_adata.h5ad")
+    adata = sc.read("adata_metadata.h5ad")
 
-    calculate_expected_doublet_rate(adata) # would be good to printed in html output page
-    sample_list = [samples] # how is best to over come this? same in the add_metadata.py script
+    calculate_expected_doublet_rate(
+        adata
+    )  # would be good to printed in html output page
+    sample_list = [
+        samples
+    ]  # how is best to over come this? same in the add_metadata.py script
 
-    for sample in sample_list: 
+    for sample in sample_list:
         adata_byid = adata[adata.obs.sanger_id == sample]
         real_cells = math.ceil(adata_byid.shape[0] / 1000) * 1000
     #### this is and issue (seemingly only worls at the start of a cell- is there alternative?)
     samples_scrubbed = {}
     scrubs = {}
-    for sample in sample_list: #
+    for sample in sample_list:  #
         adata_byid = adata[adata.obs.sanger_id == sample]
         scrub = scr.Scrublet(
-            adata_byid.X, expected_doublet_rate=calculate_expected_doublet_rate(adata_byid)
+            adata_byid.X,
+            expected_doublet_rate=calculate_expected_doublet_rate(adata_byid),
         )
         adata_byid.obs["doublet_scores"], adata_byid.obs["predicted_doublets"] = (
             scrub.scrub_doublets(
@@ -65,7 +72,7 @@ def scrublet(samples: str):
         samples_scrubbed[sample] = adata_byid
         scrubs[sample] = scrub
     #  Run per lane, each sample as identified by sanger_id was sequenced on separate lane here
-    ## Plots 
+    ## Plots
     for sample in scrubs:
         scrubs[sample].plot_histogram()
     plt.savefig("scrublet_histogram.png")
@@ -74,18 +81,19 @@ def scrublet(samples: str):
         scrubs[sample].set_embedding(
             "UMAP", scr.get_umap(scrub.manifold_obs_, 10, min_dist=0.3)
         )
-    ########################### plot above isnt saved? 
+    ########################### plot above isnt saved?
     for sample in scrubs:
         print(scrubs[sample])
         scrubs[sample].plot_embedding("UMAP", order_points=True)
     plt.savefig("scrublet_umap.png")
 
     adata = ad.concat(samples_scrubbed, index_unique=None)
-    #writing out data 
-    adata.write("scrublet_adata.h5ad")
+    # writing out data
+    adata.write("adata_scrublet.h5ad")
+
 
 if __name__ == "__main__":
-    fire.Fire(scrublet)
+    fire.Fire(run_scrublet)
 
 ###########################################
 # 3 total outputs (2 plots & 1 h5ad file) #

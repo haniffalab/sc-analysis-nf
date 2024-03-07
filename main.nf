@@ -44,25 +44,6 @@ process SOUP {
     soupx.R ${input_dir} 
     """
 }
-/////////////////////////////////////////////////////////////////////////////////////////
-process LOAD_DATA {
-
-    publishDir "${params.outdir}/${params.sample}", mode: "copy"
-
-    input: path(soup_barcodes_out)  
-           path(soup_genes_out)
-           path(soup_matrix_out)
-           path(metadata_file)
-
-    output: path("${params.load_raw_out}") //"loaddata_raw.h5ad"
-            path("${params.load_meta_out}") //"loaddata.h5ad"
-    
-    script:
-    """
-    loaddata.py --load_in ${soup_matrix_out} --metadata_in ${metadata_file} --load_raw_out ${params.load_raw_out} --load_meta_out ${params.load_meta_out}
-    """
-}
-//////////////////////////////////////////////////////////////////////////////////////////
 
 process LOAD_MTX {
 
@@ -72,11 +53,12 @@ process LOAD_MTX {
            path(genes)
            path(matrix)
 
-    output: path("adata.h5ad") 
+    output: path(params.args.load_mtx.adata_filename) 
     
     script:
     """
-    load_mtx.py 
+    load_mtx.py \
+        --adata_filename ${params.args.load_mtx.adata_filename} \
     """
 }
 
@@ -88,7 +70,7 @@ process ADD_METADATA {
            file(params.metadata_file)
            file(params.sample)
 
-    output: path("metadata_adata.h5ad")
+    output: path("adata_metadata.h5ad")
     
     script:
     """
@@ -101,19 +83,20 @@ process ADD_METADATA {
 
 process SCRUBLET {
 
-    publishDir "${params.outdir}/${params.sample}/${params.args.scrublet_output_dir}", mode: "copy"
+    publishDir "${params.outdir}/${params.sample}/adata", mode: "copy", pattern: ".h5ad"
+    publishDir "${params.outdir}/${params.sample}/report/plots", mode: "copy", pattern: ".png"
 
 
     input: path(add_meta_out)
            file(params.sample)
 
-    output: path("scrublet_adata.h5ad") 
+    output: path("adata_scrublet.h5ad") 
             path("scrublet_histogram.png")
             path("scrublet_umap.png")
     
     script:
     """
-    scrublet_ftskin.py \
+    run_scrublet.py \
         --samples ${params.sample}
     """
 }
@@ -170,7 +153,7 @@ process FILTER_READS {
     input: path(scrub_out)
            file(params.sample)
 
-    output: path("filtered_reads.h5ad") 
+    output: path("adata_filter.h5ad") 
             path("qcmetrics_totalcounts.png") //qcmetrics_totalcounts.png
             path("figures/violin_qcmetrics_pctcountsmt.png") //figures/violin_qcmetrics_pctcountsmt.png
             path("figures/scatter_qcmetrics.png") //figures/scatter_qcmetrics.png
@@ -236,12 +219,10 @@ process GENERATE_HTML {
 }
 
 workflow { 
-//    IRODS(irods_in,irods_in_metadata)
-    SOUP(file(params.cellranger_dir)) //ensure relative 
-    LOAD_DATA(SOUP.out[0],SOUP.out[1], SOUP.out[2], file(params.metadata_file))
+    //IRODS(irods_in,irods_in_metadata)
+    SOUP(file(params.cellranger_dir))
     LOAD_MTX(SOUP.out[0],SOUP.out[1], SOUP.out[2])
     ADD_METADATA(LOAD_MTX.out[0], file(params.metadata_file), params.sample)
-    //SCRUBLET(LOAD_DATA.out[1])
     SCRUBLET(ADD_METADATA.out[0], params.sample)
     SCANPY(SCRUBLET.out[0], params.sample)
     FILTER_READS(SCRUBLET.out[0], params.sample)

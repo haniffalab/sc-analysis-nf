@@ -20,14 +20,14 @@ import anndata as ad
 import numpy as np
 
 
-
-def load_mtx():
+def load_mtx(adata_filename: str):
 
     adata = sc.read_10x_mtx(
         "./", var_names="gene_symbols", make_unique=True, cache=False
     )
 
-    adata.write("adata.h5ad")
-    
+    adata.write(adata_filename)
+
+
 if __name__ == "__main__":
     fire.Fire(load_mtx)

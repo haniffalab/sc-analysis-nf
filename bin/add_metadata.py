@@ -21,8 +21,8 @@ import numpy as np
 
 
 def add_metadata(metadata_in: str, samples: str):
-    ## Read in raw h5ad object 
-    adata= sc.read("adata.h5ad")
+    ## Read in raw h5ad object
+    adata = sc.read("adata.h5ad")
     ## had to add these in from the first part of the load_data.py script ##
     sample = samples
     n = str(sample)
@@ -72,13 +72,13 @@ def add_metadata(metadata_in: str, samples: str):
     del adata.obs["sanger_id_y"]
     del adata.obs["sanger_id_x"]
 
-    #remove?
+    # remove?
     adata.obs.sorting.unique()
     adata.obs["sample"].unique()
 
     adata.obs["pcw"] = adata.obs["pcw"].astype(str)
 
-    adata.write("metadata_adata.h5ad")
+    adata.write("adata_metadata.h5ad")
 
 
 if __name__ == "__main__":
