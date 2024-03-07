@@ -1,20 +1,23 @@
 outdir: ./output/
 sample: FCAImmP7241240
 cellranger_dir: /Users/nlg143/projects/review2/sc-analysis-nf/input/FCAImmP7241240
+adata_output_dir: "adata"
 metadata_file: /Users/nlg143/projects/review2/sc-analysis-nf/input/old_raw_metadata.csv
-
+load_raw_out: "adata_rawdata.h5ad" ##remove
+load_meta_out: "adata_loaddata.h5ad" ##remove
+mtx_adata: "adata.h5ad"
+meta_adata: "adata_metadata.h5ad"
+scrublet_adata: "adata_scrublet.h5ad"
+filter_adata: "adata_filtered.h5ad"
+feature_selection_adata: "adata_feature_selection.h5ad"
+dimensionality_adata: "adata_dimensionality.h5ad"
+count_transformation: "adata_transformation.h5ad"
 
 args:
-  load_raw_out: "adata_rawdata.h5ad"
-  load_meta_out: "adata_loaddata.h5ad"
-  mtx_adata: "adata.h5ad"
-  meta_adata: "adata_metadata.h5ad"
-  scrublet_adata: "adata_scrublet.h5ad"
-  filter_adata: "adata_filtered.h5ad"
-  feature_selection_adata: "adata_feature_selection.h5ad"
-  dimensionality_adata: "adata_dimensionality.h5ad"
-  count_transformation: "adata_transformation.h5ad"
   soupx_output_dir: "soupx"
+  h5ad:
+    compute_embeddings: False
+  adata_output_dir: "adata"
   h5ad:
     compute_embeddings: False
   scrublet_output_dir: "scrublet"

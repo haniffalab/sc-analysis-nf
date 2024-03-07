@@ -39,9 +39,9 @@ def calculate_expected_doublet_rate(adata_object):
     expected_rate = expected_rates[real_cells]
     return expected_rate
 
-def scrublet(samples: str):
+def scrublet(samples: str, scrub_in: str, scrub_out: str):
     ##reading in data
-    adata = sc.read("adata_metadata.h5ad")
+    adata = sc.read(scrub_in)
 
     calculate_expected_doublet_rate(adata) # would be good to printed in html output page
     sample_list = [samples] # how is best to over come this? same in the add_metadata.py script
@@ -82,7 +82,7 @@ def scrublet(samples: str):
 
     adata = ad.concat(samples_scrubbed, index_unique=None)
     #writing out data 
-    adata.write("adata_scrublet.h5ad")
+    adata.write(scrub_out)
 
 if __name__ == "__main__":
     fire.Fire(scrublet)

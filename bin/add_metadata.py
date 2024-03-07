@@ -20,9 +20,9 @@ import anndata as ad
 import numpy as np
 
 
-def add_metadata(metadata_in: str, samples: str):
+def add_metadata(add_meta_in: str, metadata_in: str, samples: str, add_metadata_out: str):
     ## Read in raw h5ad object 
-    adata= sc.read("adata.h5ad")
+    adata= sc.read(add_meta_in)
     ## had to add these in from the first part of the load_data.py script ##
     sample = samples
     n = str(sample)
@@ -78,7 +78,7 @@ def add_metadata(metadata_in: str, samples: str):
 
     adata.obs["pcw"] = adata.obs["pcw"].astype(str)
 
-    adata.write("adata_metadata.h5ad")
+    adata.write(add_metadata_out)
 
 
 if __name__ == "__main__":

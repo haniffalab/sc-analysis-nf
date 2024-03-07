@@ -66,55 +66,61 @@ process LOAD_DATA {
 
 process LOAD_MTX {
 
-    publishDir "${params.outdir}/${params.sample}", mode: "copy"
+    publishDir "${params.outdir}/${params.sample}/${params.adata_output_dir}", mode: "copy", pattern: "*.h5ad"
 
     input: path(barcodes)  
            path(genes)
            path(matrix)
 
-    output: path("adata.h5ad") //path("${params.mtx_adata}")
+    output: path("${params.mtx_adata}")
     
     script:
     """
-    load_mtx.py 
+    load_mtx.py \
+        --mtx_out ${params.mtx_adata}
     """
 }
 
 process ADD_METADATA {
 
-    publishDir "${params.outdir}/${params.sample}", mode: "copy"
+    publishDir "${params.outdir}/${params.sample}/${params.adata_output_dir}", mode: "copy", pattern: "*.h5ad"
 
     input: path(soup_barcodes_out)  
            file(params.metadata_file)
            file(params.sample)
 
-    output: path("adata_metadata.h5ad") //path("${params.meta_adata}")
+    output: path("${params.meta_adata}")
     
     script:
     """
     add_metadata.py \
-    --metadata_in ${params.metadata_file} \
-    --samples ${params.sample}
+        --add_meta_in ${soup_barcodes_out} \
+        --metadata_in ${params.metadata_file} \
+        --samples ${params.sample} \
+        --add_metadata_out ${params.meta_adata}
     """
 }
 
 
 process SCRUBLET {
 
-    publishDir "${params.outdir}/${params.sample}/${params.args.scrublet_output_dir}", mode: "copy"
+    publishDir "${params.outdir}/${params.sample}/${params.args.scrublet_output_dir}", mode: "copy", pattern: "*.png"
+    publishDir "${params.outdir}/${params.sample}/${params.adata_output_dir}", mode: "copy", pattern: "*.h5ad"
 
 
     input: path(add_meta_out)
            file(params.sample)
 
-    output: path("adata_scrublet.h5ad") //path("${params.scrublet_adata}")
+    output: path("${params.scrublet_adata}")
             path("scrublet_histogram.png")
             path("scrublet_umap.png")
     
     script:
     """
     scrublet_sc.py \
-        --samples ${params.sample}
+        --samples ${params.sample} \
+        --scrub_in ${add_meta_out} \
+        --scrub_out ${params.scrublet_adata}
     """
 }
 
@@ -165,12 +171,13 @@ process SCANPY {
 process FILTER_READS {
 
     publishDir "${params.outdir}/${params.sample}/${params.args.filter_reads_output_dir}", mode: "copy"
+    publishDir "${params.outdir}/${params.sample}/${params.adata_output_dir}", mode: "copy", pattern: "*.h5ad"
 
 
     input: path(scrub_out)
            file(params.sample)
 
-    output: path("adata_filtered.h5ad") //path("${params.filter_adata}")
+    output: path("${params.filter_adata}")
             path("qcmetrics_totalcounts.png") 
             path("figures/violin_qcmetrics_pctcountsmt.png") 
             path("figures/scatter_qcmetrics.png")
@@ -180,35 +187,39 @@ process FILTER_READS {
     script:
     """
     filter_reads.py \
-        --samples ${params.sample}
+        --samples ${params.sample} \
+        --filter_in ${scrub_out} \
+        --filter_out ${params.filter_adata}
     """
 }
 
 process FEATURE_SELECTION {
 
     publishDir "${params.outdir}/${params.sample}/${params.args.feature_selection_output_dir}", mode: "copy"
-
+    publishDir "${params.outdir}/${params.sample}/${params.adata_output_dir}", mode: "copy", pattern: "*.h5ad"
 
     input: path(filter_reads_out)
 
-    output: path("adata_feature_selection.h5ad") //path("${params.feature_selection_adata}")
+    output: path("${params.feature_selection_adata}")
             path("figures/highest_expr_genes_FCAImmP7241240.png") //*
             path("figures/filter_genes_dispersion_scatter_FCAImmP7241240.png") //*
     
     script:
     """
-    feature_selection.py 
+    feature_selection.py \
+        --feature_in ${filter_reads_out} \
+        --feature_out ${params.feature_selection_adata}
     """
 }
 
 process DIMENSIONALITY {
 
     publishDir "${params.outdir}/${params.sample}/${params.args.dimensionality_output_dir}", mode: "copy"
-
+    publishDir "${params.outdir}/${params.sample}/${params.adata_output_dir}", mode: "copy", pattern: "*.h5ad"
 
     input: path(feature_selection_out)
 
-    output: path("adata_dimensionality.h5ad") //path("${params.dimensionality_adata}")
+    output: path("${params.dimensionality_adata}")
             path("figures/pca_FCAImmP7241240.png") 
             path("figures/pca_variance_ratio_FCAImmP7241240.png") // *
             path("figures/umap_neighbour_FCAImmP7241240.png") // *
@@ -231,18 +242,19 @@ process DIMENSIONALITY {
     script:
     """
     dimensionality_reduction.py \
-        --input_file ${feature_selection_out}
+        --dimensionality_in ${feature_selection_out} \
+        --dimensionality_out ${params.dimensionality_adata}
     """
 }
 
 process COUNT_TRANSFORMATION {
 
     publishDir "${params.outdir}/${params.sample}/${params.args.count_transformation_output_dir}", mode: "copy"
+    publishDir "${params.outdir}/${params.sample}/${params.adata_output_dir}", mode: "copy", pattern: "*.h5ad"
 
+    input: path(counts_in)
 
-    input: path(dimensionaltiy_out)
-
-    output: path("adata_transformation.h5ad") //path("${params.count_transformation}")
+    output: path("${params.count_transformation}")
             path("figures/pca_plot24_normalised.png") // *
             path("figures/umap_metadata.png") //
             path("figures/violin_n_genes_by_counts_sangerid.png") // *
@@ -252,7 +264,8 @@ process COUNT_TRANSFORMATION {
     script:
     """
     count_transformation.py \
-        --dimensionality_out ${dimensionaltiy_out}
+        --counts_in ${counts_in} \
+        --counts_out ${params.count_transformation}
     """
 }
 

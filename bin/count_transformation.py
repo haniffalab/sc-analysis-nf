@@ -15,8 +15,8 @@ import math
 from scipy.stats import median_abs_deviation
 
 
-def count_trans(dimensionality_out: str):
-    adata= sc.read(dimensionality_out)
+def count_trans(counts_in: str, counts_out: str):
+    adata= sc.read(counts_in)
     sc.pp.normalize_total(adata, target_sum=1e4)
     sc.pp.log1p(adata)
 
@@ -41,7 +41,7 @@ def count_trans(dimensionality_out: str):
     sc.tl.umap(adata_normalised, min_dist=0.3, spread=1.0,init_pos='spectral') # Using the default distance scaling from umap-learn
     adata_normalised.obsm['X_umap_disp_03'] = adata_normalised.obsm['X_umap']
 
-    adata.write("adata_transformation.h5ad")
+    adata.write(counts_out)
 
 if __name__ == "__main__":
     fire.Fire(count_trans)
