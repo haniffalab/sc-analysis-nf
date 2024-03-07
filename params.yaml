@@ -3,8 +3,6 @@ sample: FCAImmP7241240
 cellranger_dir: /Users/nlg143/projects/review2/sc-analysis-nf/input/FCAImmP7241240
 adata_output_dir: "adata"
 metadata_file: /Users/nlg143/projects/review2/sc-analysis-nf/input/old_raw_metadata.csv
-load_raw_out: "adata_rawdata.h5ad" ##remove
-load_meta_out: "adata_loaddata.h5ad" ##remove
 mtx_adata: "adata.h5ad"
 meta_adata: "adata_metadata.h5ad"
 scrublet_adata: "adata_scrublet.h5ad"
