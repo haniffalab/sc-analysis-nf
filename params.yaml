@@ -1,8 +1,8 @@
 outdir: ./output/
 sample: FCAImmP7241240
-cellranger_dir: /Users/nlg143/projects/review2/sc-analysis-nf/input/FCAImmP7241240
+cellranger_dir: ./input/FCAImmP7241240
 adata_output_dir: "adata"
-metadata_file: /Users/nlg143/projects/review2/sc-analysis-nf/input/old_raw_metadata.csv
+metadata_file: ./input/old_raw_metadata.csv
 mtx_adata: "adata.h5ad"
 meta_adata: "adata_metadata.h5ad"
 scrublet_adata: "adata_scrublet.h5ad"
@@ -11,17 +11,37 @@ feature_selection_adata: "adata_feature_selection.h5ad"
 dimensionality_adata: "adata_dimensionality.h5ad"
 count_transformation: "adata_transformation.h5ad"
 
+
+html_theme: "html/theme/dist"
+# params.html_template_dir = "html/"
+# params.html_out = "output/index.html"
+
 args:
   soupx_output_dir: "soupx"
   h5ad:
     compute_embeddings: False
+  adata_output_dir: "adata"
+  h5ad:
+    compute_embeddings: False
   scrublet_output_dir: "scrublet"
+  h5ad:
+    compute_embeddings: False
   scanpy_output_dir: "scanpy"
+  h5ad:
+    compute_embeddings: False  
   filter_reads_output_dir: "filter_reads"
+  h5ad:
+    compute_embeddings: False
   feature_selection_output_dir: "feature_selection"
+  h5ad:
+    compute_embeddings: False
   html_output_dir: "html"
+  h5ad:
+    compute_embeddings: False
   dimensionality_output_dir: "dimensionality"
   h5ad:
     compute_embeddings: False
-
+  count_transformation_output_dir: "count_transformation"
+  h5ad:
+    compute_embeddings: False
 

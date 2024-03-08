@@ -58,6 +58,3 @@ dev.off()
 ###################################
 adj.matrix  <- adjustCounts(soup.channel, roundToInt = T)
 DropletUtils:::write10xCounts("adjusted_counts", adj.matrix)
-
-
-
