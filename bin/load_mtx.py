@@ -20,13 +20,13 @@ import anndata as ad
 import numpy as np
 
 
-def load_mtx(adata_filename: str):
+def load_mtx(mtx_out):
 
     adata = sc.read_10x_mtx(
         "./", var_names="gene_symbols", make_unique=True, cache=False
     )
 
-    adata.write(adata_filename)
+    adata.write(mtx_out)
 
 
 if __name__ == "__main__":

@@ -15,8 +15,8 @@ import math
 from scipy.stats import median_abs_deviation
 
 
-def filter_reads(samples: str):
-    adata = sc.read("scrublet_adata.h5ad")
+def filter_reads(filter_in: str, samples: str, filter_out: str):
+    adata = sc.read(filter_in)
     adata.raw = adata
     sample_list = [samples]
 
@@ -120,8 +120,7 @@ def filter_reads(samples: str):
         ["predicted_doublets", "outlier", "mt_outlier", "n_genes_by_counts", "QC"]
     ].head(10)
 
-    # adata.layers["counts"] = adata.X.copy()
-    adata.write("adata_filter.h5ad")
+    adata.write(filter_out)
 
 
 if __name__ == "__main__":
