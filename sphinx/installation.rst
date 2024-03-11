@@ -45,26 +45,54 @@ Change directory into the new repo.
 Environment setup
 =================
 
+.. _environment_Docker:
+
+Follow these Environment Setup instructions using conda, Docker or manually installing the required components to run sc-analysis-nf.
+
+Using Docker
+-----------
+**If you have Docker installed locally:**
+- Open the Docker application on your device before running the pipeline.
+If you want to use Docker, make sure Docker Engine 20.10 or later is installed on your computer by using the command:
+
+.. code-block:: shell
+   :caption: Input
+
+   docker version
+
+.. code-block:: shell
+   :caption: Output
+
+   Client: Docker Engine - Community
+   Version:           23.0.4
+   API version:       1.42
+   Go version:        go1.19.8
+   Git commit:        f480fb1
+   Built:             Fri Apr 14 10:32:23 2023
+   OS/Arch:           linux/amd64
+   Context:           default
+
+**If you do not have Docker installed locally:** 
+Follow the `official Docker Install guide`_.
+
 .. _environment_conda:
 
-Follow these Environment Setup instructions using conda or manually installing the required components to run sc-analysis-nf.
-
-Using conda
+Using conda (optional)
 -----------
 
-If you have `conda`_ or `mamba`_ already installed then you can use the ``cellrank.yaml`` file included in the sc-analysis-nf release to create the environment.
+If you have `conda`_ or `mamba`_ already installed then you can use the ``environment.yaml`` file included in the sc-analysis-nf release to create the environment.
 
 .. code-block:: shell
    :caption: Input
 
-   conda create -n nextflow_env -f cellrank.yaml
+   conda create -n nextflow_env -f environment.yaml
 
-Then make sure you activate the ``cellrank`` environment before you use the pipeline.
+Then make sure you activate the ``environment`` environment before you use the pipeline.
 
 .. code-block:: shell
    :caption: Input
 
-   conda acitvate cellrank 
+   conda activate environment 
 
 
 .. _environment_manual:

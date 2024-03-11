@@ -220,6 +220,7 @@ process GENERATE_HTML {
     """
 }
 
+//this workflow block is used if no other wrkflow is defined
 workflow { 
     html_dist_dir = projectDir/'html'/'dist'
     // IRODS(irods_in,irods_in_metadata)
@@ -233,3 +234,29 @@ workflow {
     COUNT_TRANSFORMATION(DIMENSIONALITY.out[0])
     GENERATE_HTML(file(html_dist_dir))
 }
+
+//To define these workflow blocks- 'nextflow run main.nf ... -entry adata_generation'
+
+//adata_generation includes soupx/and then adata generation (incl. metadata)
+workflow adata_generation { 
+    html_dist_dir = projectDir/'html'/'dist'
+    // IRODS(irods_in,irods_in_metadata)
+    SOUP(file(params.cellranger_dir))
+    LOAD_MTX(SOUP.out[0],SOUP.out[1], SOUP.out[2])
+    ADD_METADATA(LOAD_MTX.out[0], file(params.metadata_file), params.sample)
+    GENERATE_HTML(file(html_dist_dir))
+}
+
+//quick_qc includes soup/ adata generation (incl. metadata)/ doublet removal/ removal of low qual reads
+workflow quick_qc { 
+    html_dist_dir = projectDir/'html'/'dist'
+    // IRODS(irods_in,irods_in_metadata)
+    SOUP(file(params.cellranger_dir))
+    LOAD_MTX(SOUP.out[0],SOUP.out[1], SOUP.out[2])
+    ADD_METADATA(LOAD_MTX.out[0], file(params.metadata_file), params.sample)
+    SCRUBLET(ADD_METADATA.out[0], params.sample)
+    FILTER_READS(SCRUBLET.out[0], params.sample)
+    GENERATE_HTML(file(html_dist_dir))
+}
+
+// add in cellranger option rather than soupx? once had RSE meeting to discuss changes

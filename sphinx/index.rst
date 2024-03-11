@@ -12,11 +12,18 @@
 sc-analysis-nf
 =================
 
-This Nextflow pipeline processes single-cell data and carries out a QC process following the `PBMC3K`_ Scanpy tutorial. 
+This Nextflow pipeline processes single-cell data and carries out an initial QC workflow. 
 The pipeline also generates a series of plots uncovering the results of the QC process.
 
+**This QC anaylsis pipeline follows this basic workflow:**
+- `SoupX`_ R based tool to remove ambient RNA.
+- `scrublet`_ Python-based tool to remove doublets.
+- `scanpy`_ python-based tool to analyse sc-RNA seq data (incl. Count transformation, feature selection, dimensionality reduction, batch correction or integration.)
 
-.. _PBMC3K: https://scanpy-tutorials.readthedocs.io/en/latest/pbmc3k.html
+
+.. _SoupX: https://github.com/constantAmateur/SoupX 
+.. _scrublet: https://github.com/swolock/scrublet
+.. _scanpy: https://scanpy.readthedocs.io/en/stable/
 
 .. toctree::
    :maxdepth: 1

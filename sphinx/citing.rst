@@ -11,4 +11,4 @@ Citation
 
 If you use this software in a scientific publication, please cite using the following Zenodo reference. 
 
-**Li, Tong, Horsfall, David, Basurto-Lozada, Daniela, Prete, Martin, Jessica, Cox, Iolo, Squires, & Louise, Grimble. (2023). sc-analysis-nf Pipeline (v0.0.1).
+**Grimble, Louise, Horsfall, David, Basurto-Lozada, Daniela (2024). sc-analysis-nf Pipeline (v0.0.1).
