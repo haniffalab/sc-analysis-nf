@@ -8,7 +8,7 @@ import random
 import shutil
 
 
-def generate_html(html_table: str):
+def generate_html(plot_soupx: str):
     env = Environment(loader=FileSystemLoader("dist"))
     template_index = env.get_template("index.html")
     # template_soup = env.get_template("soup.html")
@@ -22,13 +22,16 @@ def generate_html(html_table: str):
     ###################################
 
     shutil.copytree("dist", "report")
+    os.makedirs("report/figures", exist_ok=True)
+    shutil.copy("soup.channel.png", "report/figures/soup.channel.png")
+
     output_index = "report/index.html"
     with open(output_index, "w") as fh:
         fh.write(
             template_index.render(
                 SAMPLE_ID="SC-analysis-nf Pipeline Output Page",
                 show_preprocessing=True,
-                PLOT_SOUPX_CHANNEL="/plots/soupx/soup.channel.png",
+                PLOT_SOUPX_CHANNEL="/report/figures/soup.channel.png",
                 img_2="/sc-analysis-nf/output/figures/violin_pct_counts_mt_2.png",
                 img_3="/sc-analysis-nf/output/figures/violin_n_genes_by_counts_2.png",
                 img_4="/sc-analysis-nf/output/figures/violin_total_counts_2.png",

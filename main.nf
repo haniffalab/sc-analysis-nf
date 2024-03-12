@@ -26,7 +26,7 @@ process IRODS {
 
 process SOUP {
 
-    publishDir "${params.outdir}/${params.sample}/report/plots/${params.args.soupx_output_dir}", mode: "copy", pattern: "*.png"
+    publishDir "${params.outdir}/${params.sample}/figures/${params.args.soupx_output_dir}", mode: "copy", pattern: "*.png"
     publishDir "${params.outdir}/${params.sample}/${params.adata_output_dir}", mode: "copy", pattern: "*.tsv"
     publishDir "${params.outdir}/${params.sample}/${params.adata_output_dir}", mode: "copy", pattern: "*.mtx"
 
@@ -83,7 +83,7 @@ process ADD_METADATA {
 
 process SCRUBLET {
 
-    publishDir "${params.outdir}/${params.sample}/report/plots/${params.args.scrublet_output_dir}", mode: "copy", pattern: "*.png"
+    publishDir "${params.outdir}/${params.sample}/figures/${params.args.scrublet_output_dir}", mode: "copy", pattern: "*.png"
     publishDir "${params.outdir}/${params.sample}/${params.adata_output_dir}", mode: "copy", pattern: "*.h5ad"
 
 
@@ -105,8 +105,8 @@ process SCRUBLET {
 
 process FILTER_READS {
 
-    publishDir "${params.outdir}/${params.sample}/report/plots/${params.args.filter_reads_output_dir}", mode: "copy", pattern: "figures/*.png"
-    publishDir "${params.outdir}/${params.sample}/report/plots/${params.args.filter_reads_output_dir}", mode: "copy", pattern: "*.png"
+    publishDir "${params.outdir}/${params.sample}/figures/${params.args.filter_reads_output_dir}", mode: "copy", pattern: "figures/*.png"
+    publishDir "${params.outdir}/${params.sample}/figures/${params.args.filter_reads_output_dir}", mode: "copy", pattern: "*.png"
     publishDir "${params.outdir}/${params.sample}/${params.adata_output_dir}", mode: "copy", pattern: "*.h5ad"
 
 
@@ -131,7 +131,7 @@ process FILTER_READS {
 
 process FEATURE_SELECTION {
 
-    publishDir "${params.outdir}/${params.sample}/report/plots/${params.args.feature_selection_output_dir}", mode: "copy", pattern: "figures/*.png"
+    publishDir "${params.outdir}/${params.sample}/figures/${params.args.feature_selection_output_dir}", mode: "copy", pattern: "figures/*.png"
     publishDir "${params.outdir}/${params.sample}/${params.adata_output_dir}", mode: "copy", pattern: "*.h5ad"
 
     input: path(filter_reads_out)
@@ -150,7 +150,7 @@ process FEATURE_SELECTION {
 
 process DIMENSIONALITY {
 
-    publishDir "${params.outdir}/${params.sample}/report/plots/${params.args.dimensionality_output_dir}", mode: "copy", pattern: "figures/*.png"
+    publishDir "${params.outdir}/${params.sample}/figures/${params.args.dimensionality_output_dir}", mode: "copy", pattern: "figures/*.png"
     publishDir "${params.outdir}/${params.sample}/${params.adata_output_dir}", mode: "copy", pattern: "*.h5ad"
 
     input: path(feature_selection_out)
@@ -185,7 +185,7 @@ process DIMENSIONALITY {
 
 process COUNT_TRANSFORMATION {
 
-    publishDir "${params.outdir}/${params.sample}/report/plots/${params.args.count_transformation_output_dir}", mode: "copy", pattern: "figures/*.png"
+    publishDir "${params.outdir}/${params.sample}/figures/${params.args.count_transformation_output_dir}", mode: "copy", pattern: "figures/*.png"
     publishDir "${params.outdir}/${params.sample}/${params.adata_output_dir}", mode: "copy", pattern: "*.h5ad"
 
     input: path(counts_in)
@@ -210,13 +210,14 @@ process GENERATE_HTML {
     publishDir "${params.outdir}/${params.sample}", mode: "copy"
 
     input: path(html_dist_dir)
+           path(plot_soupx)
 
     output: path("report") //eventually want whole directory 
     
     script:
     """
     generate_html.py \
-    --html_table ${html_dist_dir}
+    --plot_soupx ${plot_soupx}
     """
 }
 
@@ -232,7 +233,7 @@ workflow {
     FEATURE_SELECTION(FILTER_READS.out[0])
     DIMENSIONALITY(FEATURE_SELECTION.out[0])
     COUNT_TRANSFORMATION(DIMENSIONALITY.out[0])
-    GENERATE_HTML(file(html_dist_dir))
+    GENERATE_HTML(file(html_dist_dir), SOUP.out[3])
 }
 
 //To define these workflow blocks- 'nextflow run main.nf ... -entry adata_generation'
@@ -258,5 +259,13 @@ workflow quick_qc {
     FILTER_READS(SCRUBLET.out[0], params.sample)
     GENERATE_HTML(file(html_dist_dir))
 }
+
+
+//quick_qc includes soup/ adata generation (incl. metadata)/ doublet removal/ removal of low qual reads
+workflow generate_report { 
+    html_dist_dir = projectDir/'html'/'dist'
+    GENERATE_HTML(file(html_dist_dir))
+}
+
 
 // add in cellranger option rather than soupx? once had RSE meeting to discuss changes
